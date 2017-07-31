@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "155942301882",
+    "firebase_url": "https://chongo-a69eb.firebaseio.com",
+    "project_id": "chongo-a69eb",
+    "storage_bucket": "chongo-a69eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155942301882:android:947a7879b4f0f2d2",
+        "android_client_info": {
+          "package_name": "com.maximbravo.chongo3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155942301882-nggahve90oq21mbstm6odm2eope8i091.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maximbravo.chongo3",
+            "certificate_hash": "1c9f05d627216f95fe82514ce028fdda83e80025"
+          }
+        },
+        {
+          "client_id": "155942301882-kmtsrsckc7gm36u8olic4vt3u1ev7ufn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo5e-xwFgZxzhPUEbexQ3IbaKgdUrY2MA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155942301882-kmtsrsckc7gm36u8olic4vt3u1ev7ufn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

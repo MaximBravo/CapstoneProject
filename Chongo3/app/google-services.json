@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "155942301882-nggahve90oq21mbstm6odm2eope8i091.apps.googleusercontent.com",
+          "client_id": "155942301882-tuipaniigg1hhlma06tdrmfuie8vqq96.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.maximbravo.chongo3",
             "certificate_hash": "1c9f05d627216f95fe82514ce028fdda83e80025"
+          }
+        },
+        {
+          "client_id": "155942301882-eq8eahavnae37h6u6n9k32hjmjikmdum.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maximbravo.chongo3",
+            "certificate_hash": "4959407d56c7bb897e9ff74c6ac79ff94b4774f9"
           }
         },
         {

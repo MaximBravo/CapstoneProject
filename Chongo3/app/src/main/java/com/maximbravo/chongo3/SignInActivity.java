@@ -2,6 +2,7 @@ package com.maximbravo.chongo3;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +30,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class SignInActivity extends AppCompatActivity implements
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        View.OnClickListener {
 
     private static final int RC_SIGN_IN = 1010;
     private static final String TAG = "SignInActivity";
@@ -41,6 +45,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -56,6 +61,8 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
 
+
+
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -67,6 +74,8 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         Button signOutButton = (Button) findViewById(R.id.sign_out_button);
         signOutButton.setOnClickListener(this);
 
+        Button differentUser = (Button) findViewById(R.id.different_user_button);
+        differentUser.setOnClickListener(this);
         // Initialize name display textview
         mTextView = (TextView) findViewById(R.id.display_textview);
 
@@ -82,6 +91,9 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 break;
             case R.id.sign_out_button:
                 signOut();
+                break;
+            case R.id.different_user_button:
+                signInWithADifferentUser();
                 break;
         }
     }
@@ -99,6 +111,14 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 updateUI(null);
             }
         });
+    }
+
+    private void signInWithADifferentUser() {
+        if(!mGoogleApiClient.isConnected()) {
+            signIn();
+        }
+        signOut();
+        signIn();
     }
 
     @Override
@@ -158,6 +178,8 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+
+
     }
 
     private void updateUI(FirebaseUser user) {
@@ -171,5 +193,16 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
+    }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }

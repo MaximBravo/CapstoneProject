@@ -18,7 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeckActivity"></activity>
+        <activity android:name=".DeckActivity"/>
+        <activity
+            android:name=".WordListActivity"
+            android:label="@string/title_activity_word_list"
+            android:parentActivityName=".DeckActivity"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

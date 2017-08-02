@@ -137,6 +137,8 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
+                            startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

@@ -4,10 +4,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@android:color/white"
-    android:paddingBottom="16dp"
-    android:layout_margin="16dp"
+    android:padding="8dp"
+    android:layout_margin="8dp"
     android:elevation="2dp"
-    android:paddingTop="16dp"
+
     android:layout_height="wrap_content">
     <TextView
         android:id="@+id/character"
@@ -15,7 +15,6 @@
         android:text="我"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-
         android:textSize="35sp"
         android:textAppearance="?attr/textAppearanceListItem" />
 

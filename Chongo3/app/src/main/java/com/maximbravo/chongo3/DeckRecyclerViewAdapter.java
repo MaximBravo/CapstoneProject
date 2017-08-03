@@ -31,7 +31,7 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
         Deck currentDeck = mDecks.get(position);
         holder.deckData = currentDeck;
         holder.mNameView.setText(currentDeck.getName());
-        holder.mCardCountView.setText(""+currentDeck.getCardCount());
+        holder.mCardCountView.setText("");
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

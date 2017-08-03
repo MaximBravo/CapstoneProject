@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -84,9 +85,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         root = userRoot.child(currentDeck);
 
-        // on click listener
-        FloatingActionButton addWordButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
-        addWordButton.setOnClickListener(this);
 
         // Read from the database
         root.addValueEventListener(new ValueEventListener() {
@@ -94,24 +92,29 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //
                 for(DataSnapshot deckSnapShot: dataSnapshot.getChildren()) {
-                    String character = "" + deckSnapShot.getKey();
-                    ArrayList<String> details = new ArrayList<String>();
-                    HashMap<String, Boolean> history = new HashMap<String, Boolean>();
+                    String character = (String) deckSnapShot.getKey();
+                    LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
                     for (DataSnapshot detailSnapShot : deckSnapShot.getChildren()) {
-                        details.add(detailSnapShot.getKey());
+                        allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
                     }
 
-                    updateWords(character, details, history);
+                    addWordToList(character, allDetails);
                 }
-                if(recyclerView == null) {
+
+                if (recyclerView == null) {
                     recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
                     recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener);
+                    if(mTabNumber == 0) {
+                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
+                    } else {
+                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
+                    }
                     recyclerView.setAdapter(recyclerViewAdapter);
                 } else {
                     recyclerViewAdapter.updateData(words);
                     recyclerViewAdapter.notifyDataSetChanged();
                 }
+
             }
 
             @Override
@@ -121,23 +124,32 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
+        if(mTabNumber == 1) {
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addWord();
+                }
+            });
+        } else {
+            floatingActionButton.setVisibility(View.GONE);
+        }
 
 
 
         return rootView;
     }
-    private void updateWords(String character, ArrayList<String> details, HashMap<String, Boolean> history) {
-        addWordToList(character, details, history);
-    }
 
-    private void addWordToList(String character, ArrayList<String> details, HashMap<String, Boolean> history) {
+
+    private void addWordToList(String character, LinkedHashMap<String, String> allDetails) {
         if (words == null || words.size() == 0) {
             words = new ArrayList<Word>();
         }
         if (hasDeck(character)) {
             return;
         }
-        words.add(new Word(character, details, history));
+        words.add(new Word(character, allDetails));
     }
 
     private boolean hasDeck(String character) {
@@ -152,14 +164,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.add_word_button:
-                addWord();
-                break;
-        }
-    }
+
 
     private void addWord() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -193,10 +198,14 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                         definitionString.length() == 0) {
                     Toast.makeText(getActivity(), "You need to fill in all fields.", Toast.LENGTH_LONG).show();
                 } else {
-                    Word newWord = new Word(characterField, pinyinField, definitionField);
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(characterString, newWord.toMapWithoutCharacter());
+                    Word newWord = new Word(characterString, pinyinString, definitionString);
+                    LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+                    map.put(characterString, null);
                     root.updateChildren(map);
+                    DatabaseReference characterRoot = root.child(characterString);
+                    LinkedHashMap<String, Object> detailsMap = new LinkedHashMap<String, Object>();
+                    detailsMap.putAll(newWord.getAllDetails());
+                    characterRoot.updateChildren(detailsMap);
                 }
             }
         });
@@ -211,7 +220,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             mListener = (OnGridFragmentInterationListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnGridFragmentInteractionListener");
         }
     }
 
@@ -220,6 +229,16 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_word_button:
+                addWord();
+                break;
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

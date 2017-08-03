@@ -15,10 +15,21 @@ import java.util.ArrayList;
 class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapter.ViewHolder> {
     private final TabFragment.OnGridFragmentInterationListener mListener;
     private ArrayList<Word> mWords;
+    private boolean mOnlyRecent;
 
-    public WordRecyclerViewAdapter(ArrayList<Word> words, TabFragment.OnGridFragmentInterationListener listener) {
+    public WordRecyclerViewAdapter(ArrayList<Word> words, TabFragment.OnGridFragmentInterationListener listener, Boolean onlyRecent) {
         mWords = words;
         mListener = listener;
+        mOnlyRecent = onlyRecent;
+        if(onlyRecent) {
+            mWords = getRecent(words);
+        }
+    }
+
+    private ArrayList<Word> getRecent(ArrayList<Word> words) {
+        //TODO: make this method only have the words that are recently studied
+        //For now dont show any since not started notifications yet
+        return new ArrayList<>();
     }
 
     @Override
@@ -49,7 +60,11 @@ class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapt
     }
 
     public void updateData(ArrayList<Word> newWords) {
-        mWords = newWords;
+        if(mOnlyRecent) {
+            mWords = getRecent(newWords);
+        } else {
+            mWords = newWords;
+        }
     }
     @Override
     public int getItemCount() {

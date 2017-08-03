@@ -3,18 +3,15 @@ package com.maximbravo.chongo3;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DeckFragment extends Fragment implements View.OnClickListener {
 
@@ -64,8 +60,7 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
                 //
                 for(DataSnapshot deckSnapShot: dataSnapshot.getChildren()) {
                     String deckName = "" + deckSnapShot.getKey();
-                    String cardCount = "" + deckSnapShot.getValue();
-                    updateDecks(deckName, cardCount);
+                    addDeckToLocalList(deckName);
                 }
                 if(recyclerView == null) {
                     recyclerView = (RecyclerView) rootView.findViewById(R.id.list);
@@ -91,18 +86,14 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    private void updateDecks(String deckName, String cardCount) {
-        addDeckToLocalList(deckName, cardCount);
-    }
-
-    private void addDeckToLocalList(String key, String value) {
+    private void addDeckToLocalList(String key) {
         if (decks == null || decks.size() == 0) {
             decks = new ArrayList<>();
         }
         if (hasDeck(key)) {
             return;
         }
-        decks.add(new Deck(key, value));
+        decks.add(new Deck(key));
     }
 
     private boolean hasDeck(String key) {
@@ -137,7 +128,7 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String newDeckName = nameField.getText().toString();
                 HashMap<String, Object> map = new HashMap<>();
-                map.put(newDeckName, "0");
+                map.put(newDeckName, "");
                 root.updateChildren(map);
             }
         });

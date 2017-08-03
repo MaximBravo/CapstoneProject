@@ -5,8 +5,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
-public class WordListActivity extends AppCompatActivity {
+public class WordListActivity extends AppCompatActivity implements TabFragment.OnGridFragmentInterationListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,11 +15,9 @@ public class WordListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_word_list);
 
         String deckName = null;
-        String cardCount = null;
         Intent intent = getIntent();
         if(intent != null) {
             deckName = intent.getStringExtra("deckName");
-            cardCount = intent.getStringExtra("deckCardCount");
         }
 
         ActionBar toolbar = getSupportActionBar();
@@ -47,5 +46,10 @@ public class WordListActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.word_list_fragment_container, wordListFragment).commit();
         }
+    }
+
+    @Override
+    public void onGridFragmentInteraction(Word item) {
+        Toast.makeText(this, "Hello from the character: " + item.getCharacter(), Toast.LENGTH_LONG).show();
     }
 }

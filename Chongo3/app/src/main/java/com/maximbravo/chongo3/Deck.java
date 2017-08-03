@@ -6,10 +6,9 @@ package com.maximbravo.chongo3;
 
 public class Deck {
     private String mName;
-    private String mCardCount;
-    public Deck (String name, String cardCount) {
+
+    public Deck(String name) {
         mName = name;
-        mCardCount = cardCount;
     }
 
     public String getName() {
@@ -18,13 +17,5 @@ public class Deck {
 
     public void setName(String mName) {
         this.mName = mName;
-    }
-
-    public String getCardCount() {
-        return mCardCount;
-    }
-
-    public void setCardCount(String mCardCount) {
-        this.mCardCount = mCardCount;
     }
 }

@@ -64,7 +64,6 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnLi
     public void onListFragmentInteraction(Deck item) {
         Intent intent = new Intent(this, WordListActivity.class);
         intent.putExtra("deckName", item.getName());
-        intent.putExtra("deckCardCount", item.getCardCount());
         startActivity(intent);
     }
 }

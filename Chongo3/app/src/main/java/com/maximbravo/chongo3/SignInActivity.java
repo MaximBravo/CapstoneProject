@@ -186,8 +186,8 @@ public class SignInActivity extends AppCompatActivity implements
         if(user == null) {
             mTextView.setText("Signed Out!");
         } else {
-            mTextView.setText("Hello, " + user.getDisplayName());
-            Toast.makeText(this, "Hello, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+            mTextView.setText("Hello, " + user.getEmail());
+            //Toast.makeText(this, "Hello, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
         }
     }
     @Override

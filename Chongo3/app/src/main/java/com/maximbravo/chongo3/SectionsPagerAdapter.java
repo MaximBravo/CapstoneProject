@@ -10,15 +10,18 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    public SectionsPagerAdapter(FragmentManager fm) {
+    private String deckName;
+
+    public SectionsPagerAdapter(FragmentManager fm, String deckName) {
         super(fm);
+        this.deckName = deckName;
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a TabFragment (defined as a static inner class below).
-        return TabFragment.newInstance(position);
+        return TabFragment.newInstance(position, deckName);
     }
 
     @Override
@@ -36,4 +39,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }
         return null;
     }
+
+
 }

@@ -1,8 +1,8 @@
 package com.maximbravo.chongo3;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -50,11 +50,9 @@ public class WordListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_word_list, container, false);
 
-
-
-            // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager(), mDeckName);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) rootView.findViewById(R.id.container);
@@ -81,18 +79,19 @@ public class WordListFragment extends Fragment {
 
         });
 
-
-        FloatingActionButton addWordButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
-        addWordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton addWordButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
+//        addWordButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         return rootView;
     }
+
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

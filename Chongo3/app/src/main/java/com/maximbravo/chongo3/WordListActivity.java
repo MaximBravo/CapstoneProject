@@ -15,9 +15,13 @@ public class WordListActivity extends AppCompatActivity implements TabFragment.O
         setContentView(R.layout.activity_word_list);
 
         String deckName = null;
+        String fileString = null;
         Intent intent = getIntent();
         if(intent != null) {
             deckName = intent.getStringExtra("deckName");
+            if(intent.hasExtra("file")) {
+                fileString = intent.getStringExtra("file");
+            }
         }
 
         ActionBar toolbar = getSupportActionBar();
@@ -37,10 +41,14 @@ public class WordListActivity extends AppCompatActivity implements TabFragment.O
                 return;
             }
 
+
             // Create a new Fragment to be placed in the activity layout
             WordListFragment wordListFragment = new WordListFragment();
             if(deckName != null) {
                 wordListFragment.setDeckName(deckName);
+                if(fileString != null) {
+                    wordListFragment.setFileString(fileString);
+                }
             }
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()

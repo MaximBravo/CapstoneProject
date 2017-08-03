@@ -6,6 +6,7 @@ package com.maximbravo.chongo3;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -51,6 +52,8 @@ public class TabFragment extends Fragment implements View.OnClickListener {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private OnGridFragmentInterationListener mListener;
+    private String mFileString;
+    private String currentDeck;
 
     public TabFragment() {
     }
@@ -59,11 +62,12 @@ public class TabFragment extends Fragment implements View.OnClickListener {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static TabFragment newInstance(int sectionNumber, String deckName) {
+    public static TabFragment newInstance(int sectionNumber, String deckName, String fileString) {
         TabFragment fragment = new TabFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putString("deckName", deckName);
+        args.putString("file", fileString);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +79,10 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         mTabNumber = getArguments().getInt(ARG_SECTION_NUMBER);
 
-        String currentDeck = getArguments().getString("deckName");
+        mFileString = getArguments().getString("file");
+
+
+        currentDeck = getArguments().getString("deckName");
         // Get current User
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -124,6 +131,10 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        if(mFileString != null && mFileString.length() != 0) {
+            addWordsFromFile();
+        }
+
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
         if(mTabNumber == 1) {
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +152,75 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    private void addWordsFromFile() {
+        mFileString = mFileString.substring(mFileString.indexOf("Sentence translation") + 20, mFileString.length());
+        mFileString = mFileString.trim();
+
+        if(mFileString != null) {
+            int numOfColumns = 8;
+            ArrayList<String> allParts = new ArrayList<>();
+            String rollingPart = "";
+            boolean findingClosingQuote = false;
+            int holdUp = -1;
+            int rollingStart = -1;
+            for (int i = 0; i < mFileString.length(); i++) {
+                char current = mFileString.charAt(i);
+                if (current == ',') {
+                    if(holdUp != -1) {
+                        rollingPart = rollingPart.substring(0, holdUp - rollingStart+1);
+                        i = holdUp+1;
+                    }
+                    allParts.add(rollingPart);
+                    rollingPart = "";
+                    holdUp = -1;
+                    rollingStart = -1;
+                    findingClosingQuote = false;
+                } else if(current == '\n') {
+                    if(findingClosingQuote) {
+                        rollingPart += " ";
+                    } else {
+                        if(holdUp != -1) {
+                            rollingPart = rollingPart.substring(0, holdUp - rollingStart+1);
+                            i = holdUp+1;
+                        }
+                        allParts.add(rollingPart);
+                        rollingPart = "";
+                        holdUp = -1;
+                        rollingStart = -1;
+                        findingClosingQuote = false;
+                    }
+                } else if (current == '\"') {
+                    if(findingClosingQuote) {
+                        findingClosingQuote = false;
+                    } else {
+                        findingClosingQuote = true;
+                    }
+                } else if (current == '?' ||
+                        current == '!' ||
+                        current == '.' ||
+                        current == '？' ||
+                        current == '。' ||
+                        current == '！') {
+                    holdUp = i;
+                    rollingPart += current;
+                } else {
+                    if(rollingPart.length() == 0) {
+                        rollingStart = i;
+                    }
+                    rollingPart += current;
+                }
+
+            }
+
+            for (int i = 0; i < allParts.size(); i += numOfColumns) {
+                String simplified = allParts.get(i);
+                String traditional = allParts.get(i + 1);
+                String pinyin = allParts.get(i + 2);
+                String definition = allParts.get(i + 3);
+                addWordToFirebase(simplified, pinyin, definition);
+            }
+        }
+    }
 
     private void addWordToList(String character, LinkedHashMap<String, String> allDetails) {
         if (words == null || words.size() == 0) {
@@ -198,19 +278,31 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                         definitionString.length() == 0) {
                     Toast.makeText(getActivity(), "You need to fill in all fields.", Toast.LENGTH_LONG).show();
                 } else {
-                    Word newWord = new Word(characterString, pinyinString, definitionString);
-                    LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-                    map.put(characterString, null);
-                    root.updateChildren(map);
-                    DatabaseReference characterRoot = root.child(characterString);
-                    LinkedHashMap<String, Object> detailsMap = new LinkedHashMap<String, Object>();
-                    detailsMap.putAll(newWord.getAllDetails());
-                    characterRoot.updateChildren(detailsMap);
+                    addWordToFirebase(characterString, pinyinString, definitionString);
                 }
+            }
+        });
+        builder.setNegativeButton("Import From .csv", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(getActivity(), FileExtractor.class);
+                intent.putExtra("deckName", currentDeck);
+                startActivity(intent);
             }
         });
 
         builder.show();
+    }
+
+    public void addWordToFirebase(String character, String pinyin, String definition) {
+        Word newWord = new Word(character, pinyin, definition);
+        LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put(character, null);
+        root.updateChildren(map);
+        DatabaseReference characterRoot = root.child(character);
+        LinkedHashMap<String, Object> detailsMap = new LinkedHashMap<String, Object>();
+        detailsMap.putAll(newWord.getAllDetails());
+        characterRoot.updateChildren(detailsMap);
     }
 
     @Override

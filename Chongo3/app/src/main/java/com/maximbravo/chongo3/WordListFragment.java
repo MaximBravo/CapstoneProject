@@ -36,6 +36,7 @@ public class WordListFragment extends Fragment {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private String fileString;
 
     public WordListFragment() {}
 
@@ -52,7 +53,7 @@ public class WordListFragment extends Fragment {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager(), mDeckName);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager(), mDeckName, fileString);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) rootView.findViewById(R.id.container);
@@ -117,4 +118,7 @@ public class WordListFragment extends Fragment {
     }
 
 
+    public void setFileString(String fileString) {
+        this.fileString = fileString;
+    }
 }

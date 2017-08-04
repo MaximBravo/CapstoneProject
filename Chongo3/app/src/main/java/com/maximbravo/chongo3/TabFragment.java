@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,7 +110,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
                 if (recyclerView == null) {
                     recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                     if(mTabNumber == 0) {
                         recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
                     } else {

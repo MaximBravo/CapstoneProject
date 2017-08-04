@@ -55,7 +55,7 @@ public class WordFragment extends Fragment {
         deckRoot = userRoot.child(mDeckName);
         root = deckRoot.child(mWordName);
 
-        root.addListenerForSingleValueEvent(new ValueEventListener() {
+        root.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();

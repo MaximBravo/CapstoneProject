@@ -30,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -153,86 +152,148 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     }
 
     private void addWordsFromFile() {
-        mFileString = mFileString.substring(mFileString.indexOf("Sentence translation") + 20, mFileString.length());
-        mFileString = mFileString.trim();
-
-        if(mFileString != null) {
-            int numOfColumns = 8;
-            ArrayList<String> allParts = new ArrayList<>();
-            String rollingPart = "";
-            boolean findingClosingQuote = false;
-            int holdUp = -1;
-            int rollingStart = -1;
-            for (int i = 0; i < mFileString.length(); i++) {
-                char current = mFileString.charAt(i);
-                if (current == ',') {
-                    if(holdUp != -1) {
-                        rollingPart = rollingPart.substring(0, holdUp - rollingStart+1);
-                        i = holdUp+1;
-                    }
-                    allParts.add(rollingPart);
-                    rollingPart = "";
-                    holdUp = -1;
-                    rollingStart = -1;
-                    findingClosingQuote = false;
-                } else if(current == '\n') {
-                    if(findingClosingQuote) {
-                        rollingPart += " ";
-                    } else {
-                        if(holdUp != -1) {
-                            rollingPart = rollingPart.substring(0, holdUp - rollingStart+1);
-                            i = holdUp+1;
-                        }
-                        allParts.add(rollingPart);
-                        rollingPart = "";
-                        holdUp = -1;
-                        rollingStart = -1;
-                        findingClosingQuote = false;
-                    }
-                } else if (current == '\"') {
-                    if(findingClosingQuote) {
-                        findingClosingQuote = false;
-                    } else {
-                        findingClosingQuote = true;
-                    }
-                } else if (current == '?' ||
-                        current == '!' ||
-                        current == '.' ||
-                        current == '？' ||
-                        current == '。' ||
-                        current == '！') {
-                    holdUp = i;
-                    rollingPart += current;
-                } else {
-                    if(rollingPart.length() == 0) {
-                        rollingStart = i;
-                    }
-                    rollingPart += current;
+        StringBuilder fileStringBuilder = new StringBuilder(mFileString);
+        boolean inQuotes = false;
+        for(int i = 0; i < mFileString.length(); i++) {
+            char current = mFileString.charAt(i);
+            if(inQuotes) {
+                boolean replace = false;
+                char replacer = current;
+                switch(current) {
+                    case ',':
+                        replacer = '#';
+                        replace = true;
+                        break;
+                    case '\n':
+                        replacer = ' ';
+                        replace = true;
+                        break;
+                    case '"':
+                        inQuotes = false;
+                        break;
                 }
-
-            }
-
-            for (int i = 0; i < allParts.size(); i += numOfColumns) {
-                String simplified = allParts.get(i);
-                String traditional = allParts.get(i + 1);
-                String pinyin = allParts.get(i + 2);
-                String definition = allParts.get(i + 3);
-                addWordToFirebase(simplified, pinyin, definition);
+                if(replace) {
+                    fileStringBuilder.setCharAt(i, replacer);
+                }
+            } else {
+                switch (current) {
+                    case '"':
+                        inQuotes = true;
+                        break;
+                    case '\n':
+                        fileStringBuilder.setCharAt(i, ',');
+                        break;
+                }
             }
         }
+
+        String[] parsedFileParts = fileStringBuilder.toString().split(",");
+
+        int columns = 8;
+        for(int i = columns+1; i < parsedFileParts.length; i+= columns) {
+            String simplified = parsedFileParts[i];
+            String traditional = parsedFileParts[i+1];
+            String pinyin = parsedFileParts[i+2];
+            String definition = parsedFileParts[i+3];
+
+            definition = definition.replace('#', ',');
+            char firstChar = definition.charAt(0);
+            if(firstChar == '"') {
+                definition = definition.substring(1, definition.length()-1);
+            }
+            addWordToFirebase(simplified, pinyin, definition);
+        }
     }
+//    private void addWordsFromFileOld() {
+//        mFileString = mFileString.substring(mFileString.indexOf("Sentence translation") + 20, mFileString.length());
+//        mFileString = mFileString.trim();
+//
+//        if(mFileString != null) {
+//            int numOfColumns = 8;
+//            ArrayList<String> allParts = new ArrayList<>();
+//            String rollingPart = "";
+//            boolean findingClosingQuote = false;
+//            int holdUp = -1;
+//            int rollingStart = -1;
+//            for (int i = 0; i < mFileString.length(); i++) {
+//                char current = mFileString.charAt(i);
+//                if (current == ',') {
+//                    if(!findingClosingQuote) {
+//                        if (holdUp != -1) {
+//                            System.out.println(rollingPart);
+//                            rollingPart = rollingPart.substring(0, holdUp - rollingStart + 1);
+//                            i = holdUp + 1;
+//                        }
+//                        if (rollingPart.length() > 0) {
+//                            allParts.add(rollingPart);
+//                            rollingPart = "";
+//                            holdUp = -1;
+//                            rollingStart = -1;
+//                            findingClosingQuote = false;
+//                        }
+//                    } else {
+//                        rollingPart += ",";
+//                    }
+//                } else if(current == '\n') {
+//                    if(findingClosingQuote) {
+//                        rollingPart += " ";
+//                    } else {
+//                        if(holdUp != -1) {
+//                            rollingPart = rollingPart.substring(0, holdUp - rollingStart+1);
+//                            i = holdUp+1;
+//                        }
+//                        if(rollingPart.length() > 0) {
+//                            allParts.add(rollingPart);
+//                            rollingPart = "";
+//                            holdUp = -1;
+//                            rollingStart = -1;
+//                            findingClosingQuote = false;
+//                        }
+//                    }
+//                } else if (current == '\"' || current == '“' || current == '”') {
+//                    if(findingClosingQuote) {
+//                        findingClosingQuote = false;
+//                    } else {
+//                        findingClosingQuote = true;
+//                    }
+//                } else if (current == '?' ||
+//                        current == '!' ||
+//                        current == '.' ||
+//                        current == '？' ||
+//                        current == '。' ||
+//                        current == '！') {
+//                    holdUp = i;
+//                    rollingPart += current;
+//                } else {
+//                    if(rollingPart.length() == 0) {
+//                        rollingStart = i;
+//                    }
+//                    rollingPart += current;
+//                }
+//
+//            }
+//
+//            for (int i = 0; i < allParts.size(); i += numOfColumns) {
+//                String simplified = allParts.get(i);
+//                String traditional = allParts.get(i + 1);
+//                String pinyin = allParts.get(i + 2);
+//                String definition = allParts.get(i + 3);
+//                addWordToFirebase(simplified, pinyin, definition);
+//            }
+//        }
+//    }
 
     private void addWordToList(String character, LinkedHashMap<String, String> allDetails) {
         if (words == null || words.size() == 0) {
             words = new ArrayList<Word>();
         }
-        if (hasDeck(character)) {
+        if (hasWord(character)) {
             return;
         }
         words.add(new Word(character, allDetails));
     }
 
-    private boolean hasDeck(String character) {
+    private boolean hasWord(String character) {
         if(words != null) {
             for(int i = 0 ; i < words.size(); i++) {
                 String currentCharacter = words.get(i).getCharacter();

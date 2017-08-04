@@ -3,6 +3,7 @@ package com.maximbravo.chongo3;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by Maxim Bravo on 8/2/2017.
@@ -31,6 +32,19 @@ class Word {
         allDetails.put("definition", definition);
     }
 
+    public Map<String, String> getHistory() {
+        if(allDetails == null) {
+            return null;
+        }
+        Map<String, String> history = new HashMap<>();
+        for(String key : allDetails.keySet()) {
+            if(key.equals("pinyin") || key.equals("definition")) {
+                continue;
+            }
+            history.put(key, allDetails.get(key));
+        }
+        return history;
+    }
     public String getCharacter() {
         return character;
     }

@@ -4,17 +4,18 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-public class WordListActivity extends AppCompatActivity implements TabFragment.OnGridFragmentInterationListener {
+public class WordListActivity extends AppCompatActivity implements TabFragment.OnWordClickedListener {
+
+    private String deckName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_list);
 
-        String deckName = null;
+
         String fileString = null;
         Intent intent = getIntent();
         if(intent != null) {
@@ -57,7 +58,14 @@ public class WordListActivity extends AppCompatActivity implements TabFragment.O
     }
 
     @Override
-    public void onGridFragmentInteraction(Word item) {
+    public void onWordClicked(Word item) {
+
         Toast.makeText(this, "Hello from the character: " + item.getCharacter(), Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, WordActivity.class);
+        intent.putExtra("deckName", deckName);
+        intent.putExtra("key", item.getCharacter());
+        startActivity(intent);
+
     }
 }

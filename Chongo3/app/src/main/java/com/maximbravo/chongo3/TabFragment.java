@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -51,7 +50,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private OnGridFragmentInterationListener mListener;
+    private OnWordClickedListener mListener;
     private String mFileString;
     private String currentDeck;
 
@@ -205,84 +204,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             addWordToFirebase(simplified, pinyin, definition);
         }
     }
-//    private void addWordsFromFileOld() {
-//        mFileString = mFileString.substring(mFileString.indexOf("Sentence translation") + 20, mFileString.length());
-//        mFileString = mFileString.trim();
-//
-//        if(mFileString != null) {
-//            int numOfColumns = 8;
-//            ArrayList<String> allParts = new ArrayList<>();
-//            String rollingPart = "";
-//            boolean findingClosingQuote = false;
-//            int holdUp = -1;
-//            int rollingStart = -1;
-//            for (int i = 0; i < mFileString.length(); i++) {
-//                char current = mFileString.charAt(i);
-//                if (current == ',') {
-//                    if(!findingClosingQuote) {
-//                        if (holdUp != -1) {
-//                            System.out.println(rollingPart);
-//                            rollingPart = rollingPart.substring(0, holdUp - rollingStart + 1);
-//                            i = holdUp + 1;
-//                        }
-//                        if (rollingPart.length() > 0) {
-//                            allParts.add(rollingPart);
-//                            rollingPart = "";
-//                            holdUp = -1;
-//                            rollingStart = -1;
-//                            findingClosingQuote = false;
-//                        }
-//                    } else {
-//                        rollingPart += ",";
-//                    }
-//                } else if(current == '\n') {
-//                    if(findingClosingQuote) {
-//                        rollingPart += " ";
-//                    } else {
-//                        if(holdUp != -1) {
-//                            rollingPart = rollingPart.substring(0, holdUp - rollingStart+1);
-//                            i = holdUp+1;
-//                        }
-//                        if(rollingPart.length() > 0) {
-//                            allParts.add(rollingPart);
-//                            rollingPart = "";
-//                            holdUp = -1;
-//                            rollingStart = -1;
-//                            findingClosingQuote = false;
-//                        }
-//                    }
-//                } else if (current == '\"' || current == '“' || current == '”') {
-//                    if(findingClosingQuote) {
-//                        findingClosingQuote = false;
-//                    } else {
-//                        findingClosingQuote = true;
-//                    }
-//                } else if (current == '?' ||
-//                        current == '!' ||
-//                        current == '.' ||
-//                        current == '？' ||
-//                        current == '。' ||
-//                        current == '！') {
-//                    holdUp = i;
-//                    rollingPart += current;
-//                } else {
-//                    if(rollingPart.length() == 0) {
-//                        rollingStart = i;
-//                    }
-//                    rollingPart += current;
-//                }
-//
-//            }
-//
-//            for (int i = 0; i < allParts.size(); i += numOfColumns) {
-//                String simplified = allParts.get(i);
-//                String traditional = allParts.get(i + 1);
-//                String pinyin = allParts.get(i + 2);
-//                String definition = allParts.get(i + 3);
-//                addWordToFirebase(simplified, pinyin, definition);
-//            }
-//        }
-//    }
+
 
     private void addWordToList(String character, LinkedHashMap<String, String> allDetails) {
         if (words == null || words.size() == 0) {
@@ -370,8 +292,8 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnGridFragmentInterationListener) {
-            mListener = (OnGridFragmentInterationListener) context;
+        if (context instanceof OnWordClickedListener) {
+            mListener = (OnWordClickedListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnGridFragmentInteractionListener");
@@ -404,9 +326,9 @@ public class TabFragment extends Fragment implements View.OnClickListener {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnGridFragmentInterationListener {
+    public interface OnWordClickedListener {
         // TODO: Update argument type and name
-        void onGridFragmentInteraction(Word item);
+        void onWordClicked(Word item);
     }
 }
 

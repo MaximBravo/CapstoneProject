@@ -13,11 +13,11 @@ import java.util.ArrayList;
  */
 
 class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapter.ViewHolder> {
-    private final TabFragment.OnGridFragmentInterationListener mListener;
+    private final TabFragment.OnWordClickedListener mListener;
     private ArrayList<Word> mWords;
     private boolean mOnlyRecent;
 
-    public WordRecyclerViewAdapter(ArrayList<Word> words, TabFragment.OnGridFragmentInterationListener listener, Boolean onlyRecent) {
+    public WordRecyclerViewAdapter(ArrayList<Word> words, TabFragment.OnWordClickedListener listener, Boolean onlyRecent) {
         mWords = words;
         mListener = listener;
         mOnlyRecent = onlyRecent;
@@ -53,7 +53,7 @@ class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapt
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onGridFragmentInteraction(holder.wordData);
+                    mListener.onWordClicked(holder.wordData);
                 }
             }
         });

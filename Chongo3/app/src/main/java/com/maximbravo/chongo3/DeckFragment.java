@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 public class DeckFragment extends Fragment implements View.OnClickListener {
 
-    private OnListFragmentInteractionListener mListener;
+    private OnDeckClickedListener mListener;
     private static final String TAG = "DeckFragment";
     private FirebaseUser mCurrentUser;
     private FirebaseDatabase database;
@@ -139,11 +139,11 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnDeckClickedListener) {
+            mListener = (OnDeckClickedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnDeckClickedListener");
         }
     }
 
@@ -163,8 +163,8 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnDeckClickedListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Deck item);
+        void onDeckClicked(Deck item);
     }
 }

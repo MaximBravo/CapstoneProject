@@ -6,15 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.maximbravo.chongo3.DeckFragment.OnListFragmentInteractionListener;
+import com.maximbravo.chongo3.DeckFragment.OnDeckClickedListener;
 import java.util.ArrayList;
 
 public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerViewAdapter.ViewHolder> {
 
-    private final OnListFragmentInteractionListener mListener;
+    private final OnDeckClickedListener mListener;
     private ArrayList<Deck> mDecks;
 
-    public DeckRecyclerViewAdapter(ArrayList<Deck> decks, OnListFragmentInteractionListener listener) {
+    public DeckRecyclerViewAdapter(ArrayList<Deck> decks, OnDeckClickedListener listener) {
         mDecks = decks;
         mListener = listener;
     }
@@ -39,7 +39,7 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.deckData);
+                    mListener.onDeckClicked(holder.deckData);
                 }
             }
         });

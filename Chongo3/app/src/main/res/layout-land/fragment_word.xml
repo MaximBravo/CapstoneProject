@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_margin="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/main_details"
+        android:background="@android:color/white"
+        android:layout_margin="8dp"
+        android:elevation="2dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/word"
+            android:text="这是一个"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="50sp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"/>
+
+        <TextView
+            android:id="@+id/pinyin"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="zhe shi yi ge"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/definition"
+            android:text="This is a. This is a."
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_margin="8dp"
+        android:id="@+id/history"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/history_list_item"
+        android:layout_weight="1">
+
+    </ListView>
+</LinearLayout>

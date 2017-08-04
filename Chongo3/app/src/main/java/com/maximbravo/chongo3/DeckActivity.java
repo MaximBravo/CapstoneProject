@@ -1,7 +1,6 @@
 package com.maximbravo.chongo3;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,17 +8,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class DeckActivity extends AppCompatActivity implements DeckFragment.OnListFragmentInteractionListener {
+public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDeckClickedListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deck);
 
+
+        android.support.v7.app.ActionBar toolbar = getSupportActionBar();
+        if(toolbar != null) {
+            toolbar.setTitle("Your Decks");
+        }
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.deck_list_fragment_container) != null) {
@@ -61,7 +62,7 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnLi
 
 
     @Override
-    public void onListFragmentInteraction(Deck item) {
+    public void onDeckClicked(Deck item) {
         Intent intent = new Intent(this, WordListActivity.class);
         intent.putExtra("deckName", item.getName());
         startActivity(intent);

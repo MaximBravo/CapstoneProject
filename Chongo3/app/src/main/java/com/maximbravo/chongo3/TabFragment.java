@@ -7,6 +7,7 @@ package com.maximbravo.chongo3;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -53,6 +54,8 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     private OnWordClickedListener mListener;
     private String mFileString;
     private String currentDeck;
+    private static boolean clearFile = false;
+    public static boolean running = false;
 
     public TabFragment() {
     }
@@ -80,6 +83,10 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         mFileString = getArguments().getString("file");
 
+        if(clearFile) {
+            getArguments().putString("file", "");
+            clearFile = false;
+        }
 
         currentDeck = getArguments().getString("deckName");
         // Get current User
@@ -130,8 +137,9 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        if(mFileString != null && mFileString.length() != 0) {
-            addWordsFromFile();
+        if(mFileString != null && mFileString.length() != 0 && !running) {
+            new LoadWordsFromFile().execute(mFileString);
+            running = true;
         }
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
@@ -151,17 +159,28 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    private void addWordsFromFile() {
-        StringBuilder fileStringBuilder = new StringBuilder(mFileString);
+    class LoadWordsFromFile extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String fileString = params[0];
+            addWordsFromFile(fileString);
+            running = false;
+            clearFile = true;
+            return null;
+        }
+    }
+    private void addWordsFromFile(String fileString) {
+        StringBuilder fileStringBuilder = new StringBuilder(fileString);
         boolean inQuotes = false;
-        for(int i = 0; i < mFileString.length(); i++) {
-            char current = mFileString.charAt(i);
+        for(int i = 0; i < fileString.length(); i++) {
+            char current = fileString.charAt(i);
             if(inQuotes) {
                 boolean replace = false;
                 char replacer = current;
                 switch(current) {
                     case ',':
-                        replacer = '#';
+                        replacer = '~';
                         replace = true;
                         break;
                     case '\n':
@@ -196,12 +215,17 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             String pinyin = parsedFileParts[i+2];
             String definition = parsedFileParts[i+3];
 
-            definition = definition.replace('#', ',');
+            definition = definition.replace('~', ',');
             char firstChar = definition.charAt(0);
             if(firstChar == '"') {
                 definition = definition.substring(1, definition.length()-1);
             }
             addWordToFirebase(simplified, pinyin, definition);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

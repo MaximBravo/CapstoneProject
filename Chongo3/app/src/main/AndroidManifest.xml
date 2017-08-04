@@ -25,7 +25,11 @@
             android:parentActivityName=".DeckActivity"
             android:theme="@style/AppTheme" />
         <activity android:name=".FileExtractor" />
-        <activity android:name=".WordActivity"></activity>
+        <activity android:name=".WordActivity" />
+        <activity android:name=".QuizActivity"
+            android:theme="@style/AppTheme.QuizOverlay">
+
+        </activity>
     </application>
 
 </manifest>

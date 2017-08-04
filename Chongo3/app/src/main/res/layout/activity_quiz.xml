@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root"
+    android:background="@color/colorPrimary"
+    tools:context="com.maximbravo.chongo3.QuizActivity">
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/main_details"
+            android:layout_width="0dp"
+            android:animateLayoutChanges="true"
+            android:layout_height="0dp"
+            android:gravity="center"
+            app:layout_constraintVertical_weight="1"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+            <TextView
+                android:id="@+id/word"
+                android:text="这是一个"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="50sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/pinyin"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="zhe shi yi ge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/definition"
+                android:text="This is a. This is a."
+                android:visibility="gone"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/linearLayout2">
+        <Button
+            android:id="@+id/bad"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Bad"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="OK"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/good"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Good"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

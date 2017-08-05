@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DeckFragment extends Fragment implements View.OnClickListener {
+public class DeckFragment extends Fragment {
 
     private OnDeckClickedListener mListener;
     private static final String TAG = "DeckFragment";
@@ -51,7 +51,12 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
 
         // on click listener
         FloatingActionButton addDeckButton = (FloatingActionButton) rootView.findViewById(R.id.add_deck_button);
-        addDeckButton.setOnClickListener(this);
+        addDeckButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addDeck();
+            }
+        });
 
         // Read from the database
         root.addValueEventListener(new ValueEventListener() {
@@ -80,9 +85,6 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-
-
-
         return rootView;
     }
 
@@ -108,15 +110,6 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.add_deck_button:
-                addDeck();
-                break;
-        }
-    }
-
     private void addDeck() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("New Deck Name:");
@@ -126,14 +119,17 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String newDeckName = nameField.getText().toString();
-                HashMap<String, Object> map = new HashMap<>();
-                map.put(newDeckName, "");
-                root.updateChildren(map);
+                addDeckToFirebase(nameField.getText().toString());
             }
         });
 
         builder.show();
+    }
+
+    private void addDeckToFirebase(String newDeckName) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(newDeckName, "");
+        root.updateChildren(map);
     }
 
     @Override

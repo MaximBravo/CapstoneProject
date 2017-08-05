@@ -56,6 +56,9 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         LinearLayout mainDetails = (LinearLayout) findViewById(R.id.main_details);
 
         mainDetails.setOnClickListener(this);
+        findViewById(R.id.good).setOnClickListener(this);
+        findViewById(R.id.bad).setOnClickListener(this);
+        findViewById(R.id.ok).setOnClickListener(this);
 
         LayoutTransition transition = mainDetails.getLayoutTransition();
         transition.enableTransitionType(LayoutTransition.CHANGING);
@@ -72,48 +75,84 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         characterTextView = (TextView) findViewById(R.id.word);
         characterTextView.setText(current.getCharacter());
         pinyinTextView = (TextView) findViewById(R.id.pinyin);
+        pinyinTextView.setVisibility(View.GONE);
         pinyinTextView.setText(current.getPinyin());
         definitionTextView = (TextView) findViewById(R.id.definition);
+        definitionTextView.setVisibility(View.GONE);
         definitionTextView.setText(current.getDefinition());
     }
 
+    private boolean done = false;
 
     @Override
     public void onClick(View v) {
-        Word currentWord = packToStudy.get(wordInPack);
-        int currentBucket = Integer.parseInt(currentWord.getBucket());
         boolean moveToNext = true;
-        switch (v.getId()) {
-            case R.id.main_details:
-                pinyinTextView.setVisibility(View.VISIBLE);
-                definitionTextView.setVisibility(View.VISIBLE);
-                moveToNext = false;
-                break;
-            case R.id.bad:
-                if(currentBucket > 1) {
-                    currentBucket--;
+        if(done) {
+            packToStudy = null;
+            finish();
+        } else {
+            Word currentWord = packToStudy.get(wordInPack);
+            int currentBucket = Integer.parseInt(currentWord.getBucket());
+
+            switch (v.getId()) {
+                case R.id.main_details:
+                    pinyinTextView.setVisibility(View.VISIBLE);
+                    definitionTextView.setVisibility(View.VISIBLE);
+                    moveToNext = false;
+                    break;
+                case R.id.bad:
+                    pinyinTextView.setVisibility(View.GONE);
+                    definitionTextView.setVisibility(View.GONE);
+                    if (currentBucket > 1) {
+                        currentBucket--;
+                    }
+                    break;
+                case R.id.ok:
+                    pinyinTextView.setVisibility(View.GONE);
+                    definitionTextView.setVisibility(View.GONE);
+                    break;
+                case R.id.good:
+                    pinyinTextView.setVisibility(View.GONE);
+                    definitionTextView.setVisibility(View.GONE);
+                    currentBucket++;
+                    break;
+            }
+
+            if(moveToNext && !done) {
+                currentWord.setBucket(currentBucket);
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                // Get current User
+                FirebaseUser mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                // Initialize database and root
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference root = database.getReference(mCurrentUser.getUid());
+
+                DatabaseReference deckRoot = root.child(currentWord.getInDeck());
+                currentWord.updateSelf(deckRoot);
+
+                wordInPack++;
+                if(wordInPack >= packToStudy.size()) {
+                    finishTest();
+                } else {
+                    studyWord(wordInPack);
                 }
-                break;
-            case R.id.ok:
-                break;
-            case R.id.good:
-                currentBucket++;
-                break;
+            }
         }
 
-        if(moveToNext) {
-            currentWord.setBucket(currentBucket);
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-            // Get current User
-            FirebaseUser mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+    }
 
-            // Initialize database and root
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference root = database.getReference(mCurrentUser.getUid());
-
-            DatabaseReference deckRoot = root.child(currentWord.getInDeck());
-            currentWord.updateSelf(deckRoot);
-        }
+    private void finishTest() {
+        characterTextView = (TextView) findViewById(R.id.word);
+        characterTextView.setText("Your Done!");
+        pinyinTextView = (TextView) findViewById(R.id.pinyin);
+        pinyinTextView.setVisibility(View.GONE);
+        pinyinTextView.setText("");
+        definitionTextView = (TextView) findViewById(R.id.definition);
+        definitionTextView.setVisibility(View.GONE);
+        definitionTextView.setText("");
+        done = true;
     }
 }

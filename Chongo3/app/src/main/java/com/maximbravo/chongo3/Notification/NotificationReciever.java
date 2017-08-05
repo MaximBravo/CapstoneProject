@@ -27,12 +27,12 @@ public class NotificationReciever extends BroadcastReceiver {
     private FirebaseUser mCurrentUser;
     private FirebaseDatabase database;
     private DatabaseReference root;
-    private ArrayList<Word> packToStudy;
+    private ArrayList<String> packToStudy;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // Get current User
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -41,10 +41,11 @@ public class NotificationReciever extends BroadcastReceiver {
         database = FirebaseDatabase.getInstance();
         root = database.getReference(mCurrentUser.getUid());
 
-        packToStudy = new ArrayList<Word>();
+        packToStudy = new ArrayList<String>();
         root.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Word firstWord = null;
                 for(DataSnapshot deck : dataSnapshot.getChildren()) {
                     for(DataSnapshot word : deck.getChildren()) {
                         String currentCharacter = word.getKey();
@@ -56,13 +57,41 @@ public class NotificationReciever extends BroadcastReceiver {
                                 if(Integer.parseInt(""+details.getValue()) <= 0) {
                                     addToStudyList = true;
                                 }
+                                allDetails.put(details.getKey(), "" + (Integer.parseInt(""+details.getValue())-1));
+
                             }
                         }
+                        Word toStudy = new Word(currentCharacter, allDetails);
+                        toStudy.updateSelf(root.child(toStudy.getInDeck()));
+
                         if (addToStudyList) {
-                            Word toStudy = new Word(currentCharacter, allDetails);
-                            packToStudy.add(toStudy);
+                            if(firstWord == null) {
+                                firstWord = toStudy;
+                            }
+                            packToStudy.add(toStudy.toString());
                         }
                     }
+                }
+
+                if(packToStudy.size() > 0) {
+                    NotificationManager notificationManager = (NotificationManager)
+                            context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    Intent repeatingIntent = new Intent(context, QuizActivity.class);
+                    repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    repeatingIntent.putExtra("pack", packToStudy);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 100,
+                            repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                            .setContentIntent(pendingIntent)
+                            .setSmallIcon(android.R.drawable.btn_star)
+                            .setContentTitle(firstWord.getCharacter())
+                            .setContentText("click to study")
+                            .setAutoCancel(true);
+
+                    notificationManager.notify(100, builder.build());
                 }
             }
 
@@ -74,23 +103,6 @@ public class NotificationReciever extends BroadcastReceiver {
 
         Log.v("NotificationReciever**", firebaseUser.getDisplayName());
 
-        if(packToStudy.size() > 0) {
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            Intent repeatingIntent = new Intent(context, QuizActivity.class);
-            repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            repeatingIntent.putExtra("pack", packToStudy);
-
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 100, repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(android.R.drawable.btn_star)
-                    .setContentTitle(packToStudy.get(0).getCharacter())
-                    .setContentText("click to study")
-                    .setAutoCancel(true);
-
-            notificationManager.notify(100, builder.build());
-        }
     }
 }

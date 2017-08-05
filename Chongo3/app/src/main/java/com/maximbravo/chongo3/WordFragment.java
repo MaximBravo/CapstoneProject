@@ -73,7 +73,7 @@ public class WordFragment extends Fragment {
                 definitionTextView.setText(currentWord.getDefinition());
 
                 ListView history = (ListView) rootView.findViewById(R.id.history);
-                history.setAdapter(new HistoryAdapter(getContext(), currentWord.getHistory()));
+                history.setAdapter(new HistoryAdapter(getActivity(), currentWord.getHistory()));
 
             }
 

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+    private final Fragment[] fragments = new Fragment[2];
     private String fileString;
     private String deckName;
 
@@ -17,13 +18,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.deckName = deckName;
         this.fileString = fileString;
+        fragments[0] = TabFragment.newInstance(0, deckName, fileString);
+        fragments[1] = TabFragment.newInstance(1, deckName, fileString);
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a TabFragment (defined as a static inner class below).
-        return TabFragment.newInstance(position, deckName, fileString);
+        return fragments[position];
     }
 
     @Override

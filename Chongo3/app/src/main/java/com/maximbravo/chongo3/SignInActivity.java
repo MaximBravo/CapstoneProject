@@ -86,11 +86,14 @@ public class SignInActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
+        Initializer initializer = new Initializer();
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
+                initializer.startAlarmManager(getApplicationContext());
                 break;
             case R.id.sign_out_button:
+                initializer.stopAlarmManager(getApplicationContext());
                 signOut();
                 break;
             case R.id.different_user_button:
@@ -180,8 +183,13 @@ public class SignInActivity extends AppCompatActivity implements
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
 
-        Initializer initializer = new Initializer();
-        initializer.startAlarmManager(getApplicationContext());
+        if(currentUser != null) {
+            Initializer initializer = new Initializer();
+            initializer.startAlarmManager(getApplicationContext());
+            Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
+            startActivity(intent);
+        }
+
 
     }
 

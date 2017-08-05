@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.maximbravo.chongo3.Notification.Initializer;
 
 public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDeckClickedListener {
     @Override
@@ -56,6 +58,10 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDe
                 Intent intent = new Intent(this, SignInActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_stop_notifications:
+                Initializer initializer = new Initializer();
+                initializer.stopAlarmManager(this);
+                Log.i("DeckActivity", "***Stopped AlarmManager");
         }
         return true;
     }

@@ -108,6 +108,14 @@ public class Word {
         this.allDetails = allDetails;
     }
 
+    public void setRounds(String rounds) {
+        this.rounds = rounds;
+    }
+
+    public void setInDeck(String inDeck) {
+        this.inDeck = inDeck;
+    }
+
     public void setBucket(int bucket) {
         this.bucket = "" + bucket;
         this.rounds = "" + getCorrespondingRounds(bucket);
@@ -174,6 +182,7 @@ public class Word {
         allDetails.put("definition", definition);
         allDetails.put("deck", inDeck);
         allDetails.put("bucket", bucket);
+        allDetails.put("rounds", rounds);
         allDetails.putAll(history);
         this.allDetails = allDetails;
     }
@@ -188,6 +197,10 @@ public class Word {
     }
 
     public void updateSelf(DatabaseReference root) {
+
+        updateDetailsMap();
+
+
         HashMap<String, Object> map = new HashMap<>();
         map.put(character, null);
         root.updateChildren(map);
@@ -195,5 +208,13 @@ public class Word {
         HashMap<String, Object> detailsMap = new HashMap<String, Object>();
         detailsMap.putAll(allDetails);
         characterRoot.updateChildren(detailsMap);
+    }
+
+    private void updateDetailsMap() {
+        allDetails.put("pinyin", pinyin);
+        allDetails.put("definition", definition);
+        allDetails.put("deck", inDeck);
+        allDetails.put("bucket", bucket);
+        allDetails.put("rounds", rounds);
     }
 }

@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +45,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     private FirebaseUser mCurrentUser;
     private FirebaseDatabase database;
     private DatabaseReference root;
+    @NonNull
     private ArrayList<Word> words = new ArrayList<>();
     private RecyclerView recyclerView;
     private View rootView;
@@ -57,6 +61,90 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     private String currentDeck;
     private static boolean clearFile = false;
     public static boolean running = false;
+    private ChildEventListener childEventListener = new ChildEventListener() {
+        //            @Override
+        //            public void onDataChange(DataSnapshot dataSnapshot) {
+        //                //
+        //                for(DataSnapshot wordSnapshot: dataSnapshot.getChildren()) {
+        //                    String character = (String) wordSnapshot.getKey();
+        //                    LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
+        //                    for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
+        //                        allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
+        //                    }
+        //
+        //                    if (!hasWord(character)) {
+        //
+        //                        words.add(new Word(character, allDetails));
+        //                        Log.i("addWordToList", "***added " + character + " to local list");
+        //                    }
+        //                }
+        //
+        //                if (recyclerView == null) {
+        //                    recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
+        //                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        //                    if(mTabNumber == 0) {
+        //                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
+        //                    } else {
+        //                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
+        //                    }
+        //                    recyclerView.setAdapter(recyclerViewAdapter);
+        //                } else {
+        //                    recyclerViewAdapter.updateData(words);
+        //                    recyclerViewAdapter.notifyDataSetChanged();
+        //                }
+        //
+        //            }
+
+        @Override
+        public void onChildAdded(DataSnapshot wordSnapshot, String s) {
+
+            String character = (String) wordSnapshot.getKey();
+            if (!hasWord(character)) {
+                LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
+                for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
+                    allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
+                }
+                words.add(new Word(character, allDetails));
+                Log.i("addWordToList", "***added " + character + " to local list");
+            }
+
+            if (recyclerView == null) {
+                recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                if (mTabNumber == 0) {
+                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
+                } else {
+                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
+                }
+                recyclerView.setAdapter(recyclerViewAdapter);
+            } else {
+                recyclerViewAdapter.updateData(words);
+                recyclerViewAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError error) {
+            // Failed to read value
+            Log.w(TAG, "Failed to read value.", error.toException());
+        }
+    };
+
 
     public TabFragment() {
     }
@@ -73,6 +161,12 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         args.putString("file", fileString);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -99,44 +193,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         root = userRoot.child(currentDeck);
 
-
-        // Read from the database
-        root.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //
-                for(DataSnapshot deckSnapShot: dataSnapshot.getChildren()) {
-                    String character = (String) deckSnapShot.getKey();
-                    LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
-                    for (DataSnapshot detailSnapShot : deckSnapShot.getChildren()) {
-                        allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
-                    }
-
-                    addWordToList(character, allDetails);
-                }
-
-                if (recyclerView == null) {
-                    recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
-                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                    if(mTabNumber == 0) {
-                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
-                    } else {
-                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
-                    }
-                    recyclerView.setAdapter(recyclerViewAdapter);
-                } else {
-                    recyclerViewAdapter.updateData(words);
-                    recyclerViewAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
+        root.addChildEventListener(childEventListener);
 
         if(mFileString != null && mFileString.length() != 0 && !running) {
             new LoadWordsFromFile().execute(mFileString);
@@ -160,10 +217,17 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        root.removeEventListener(childEventListener);
+    }
+
     class LoadWordsFromFile extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
+            Log.i("LoadWordsFromFile", "***doInBackground");
             String fileString = params[0];
             addWordsFromFile(fileString);
             running = false;
@@ -222,24 +286,10 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                 definition = definition.substring(1, definition.length()-1);
             }
             addWordToFirebase(simplified, pinyin, definition);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
+        Log.i("addWordsFromFile", "***Finished method");
     }
 
-
-    private void addWordToList(String character, LinkedHashMap<String, String> allDetails) {
-        if (words == null || words.size() == 0) {
-            words = new ArrayList<Word>();
-        }
-        if (hasWord(character)) {
-            return;
-        }
-        words.add(new Word(character, allDetails));
-    }
 
     private boolean hasWord(String character) {
         if(words != null) {
@@ -252,8 +302,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         }
         return false;
     }
-
-
 
     private void addWord() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -312,6 +360,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         HashMap<String, Object> detailsMap = new HashMap<String, Object>();
         detailsMap.putAll(newWord.getAllDetails());
         characterRoot.updateChildren(detailsMap);
+        Log.i("addWordToFirebase", "***Added: " + character);
     }
 
     @Override

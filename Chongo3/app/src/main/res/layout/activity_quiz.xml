@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/root"
     android:background="@color/colorPrimary"
-    tools:context="com.maximbravo.chongo3.QuizActivity">
+    tools:context="com.maximbravo.chongo3.Notification.QuizActivity">
 
 
         <LinearLayout

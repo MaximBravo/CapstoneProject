@@ -29,6 +29,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.maximbravo.chongo3.Notification.Initializer;
 
 public class SignInActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
@@ -179,6 +180,8 @@ public class SignInActivity extends AppCompatActivity implements
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
 
+        Initializer initializer = new Initializer();
+        //initializer.startAlarmManager(getApplicationContext());
 
     }
 

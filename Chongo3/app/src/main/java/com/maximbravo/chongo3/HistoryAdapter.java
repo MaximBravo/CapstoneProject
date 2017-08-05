@@ -34,6 +34,7 @@ public class HistoryAdapter extends BaseAdapter {
         dates = new ArrayList<>();
         values = new ArrayList<>();
         for(String key : history.keySet()) {
+
             dates.add(proccessed(key));
             values.add(history.get(key));
         }

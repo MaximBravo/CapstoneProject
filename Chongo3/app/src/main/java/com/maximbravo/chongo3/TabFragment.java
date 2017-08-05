@@ -31,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -303,12 +304,12 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addWordToFirebase(String character, String pinyin, String definition) {
-        Word newWord = new Word(character, pinyin, definition);
-        LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+        Word newWord = new Word(character, pinyin, definition, currentDeck);
+        HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(character, null);
         root.updateChildren(map);
         DatabaseReference characterRoot = root.child(character);
-        LinkedHashMap<String, Object> detailsMap = new LinkedHashMap<String, Object>();
+        HashMap<String, Object> detailsMap = new HashMap<String, Object>();
         detailsMap.putAll(newWord.getAllDetails());
         characterRoot.updateChildren(detailsMap);
     }

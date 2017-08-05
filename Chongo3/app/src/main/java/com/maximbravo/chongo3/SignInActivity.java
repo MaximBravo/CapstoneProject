@@ -181,7 +181,7 @@ public class SignInActivity extends AppCompatActivity implements
         updateUI(currentUser);
 
         Initializer initializer = new Initializer();
-        //initializer.startAlarmManager(getApplicationContext());
+        initializer.startAlarmManager(getApplicationContext());
 
     }
 

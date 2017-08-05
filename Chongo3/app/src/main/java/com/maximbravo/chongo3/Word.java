@@ -129,7 +129,7 @@ public class Word {
         }
     }
 
-    private final String divider = "~";
+    private final static String divider = "~";
     public String toString() {
         String toReturn = "" +
                 character + divider +
@@ -187,7 +187,7 @@ public class Word {
         return historyString.toString();
     }
 
-    private void updateSelf(DatabaseReference root) {
+    public void updateSelf(DatabaseReference root) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(character, null);
         root.updateChildren(map);

@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.maximbravo.chongo3.R;
 import com.maximbravo.chongo3.Word;
 
@@ -99,7 +103,17 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
         if(moveToNext) {
             currentWord.setBucket(currentBucket);
-            currentWord.updateSelf();
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            // Get current User
+            FirebaseUser mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            // Initialize database and root
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference root = database.getReference(mCurrentUser.getUid());
+
+            DatabaseReference deckRoot = root.child(currentWord.getInDeck());
+            currentWord.updateSelf(deckRoot);
         }
     }
 }

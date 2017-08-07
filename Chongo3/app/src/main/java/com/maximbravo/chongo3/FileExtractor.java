@@ -83,6 +83,13 @@ public class FileExtractor extends Activity {
                 getStringFromUri(uri);
             }
 
+
+            Intent intent = new Intent(FileExtractor.this, WordListActivity.class);
+            intent.putExtra("deckName", mDeckName);
+
+//            intent.putExtra("name", fileName);
+//            intent.putExtra("file", fileString);
+            startActivity(intent);
             // END_INCLUDE (parse_open_document_response)
         }
     }
@@ -110,11 +117,7 @@ public class FileExtractor extends Activity {
                 protected void onPostExecute(String file) {
                     System.out.println(file);
                     fileString = file;
-                    Intent intent = new Intent(FileExtractor.this, WordListActivity.class);
-                    intent.putExtra("deckName", mDeckName);
-                    intent.putExtra("name", fileName);
-                    intent.putExtra("file", fileString);
-                    startActivity(intent);
+                    new WordListFragment.LoadWordsFromFile().execute(file);
                 }
 
 

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,7 @@ import java.util.LinkedHashMap;
 
 public class WordListFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "WordListFragment";
+
     private FirebaseUser mCurrentUser;
     private FirebaseDatabase database;
     private DatabaseReference root;
@@ -50,7 +52,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private WordListFragment.OnWordClickedListener mListener;
     private String mFileString;
-    private String currentDeck;
+    private static String currentDeck;
     private static boolean clearFile = false;
     public static boolean running = false;
 
@@ -82,6 +84,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
                 recyclerViewAdapter.notifyDataSetChanged();
             }
 
+
         }
 
         @Override
@@ -89,25 +92,18 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
         }
     };
-    private DatabaseReference userRoot;
+
+
+    private static DatabaseReference userRoot;
     private String deckName;
     private String fileString;
+    private boolean wait;
+    private ProgressBar progressBar;
 
     public WordListFragment() {
     }
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static WordListFragment newInstance(int sectionNumber, String deckName, String fileString) {
-        WordListFragment fragment = new WordListFragment();
-        Bundle args = new Bundle();
-        args.putString("deckName", deckName);
-        args.putString("file", fileString);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,6 +149,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+
         return rootView;
     }
 
@@ -168,11 +165,8 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         root.addValueEventListener(valueEventListener);
     }
 
-    public void setDeckName(String deckName) {
-        this.deckName = deckName;
-    }
 
-    class LoadWordsFromFile extends AsyncTask<String, Void, Void> {
+    static class LoadWordsFromFile extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
@@ -185,7 +179,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void addWordsFromFile(String fileString) {
+    private static void addWordsFromFile(String fileString) {
         StringBuilder fileStringBuilder = new StringBuilder(fileString);
         boolean inQuotes = false;
         for (int i = 0; i < fileString.length(); i++) {
@@ -366,7 +360,4 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         void onWordClicked(Word item);
     }
 
-    public void setFileString(String fileString) {
-        this.fileString = fileString;
-    }
 }

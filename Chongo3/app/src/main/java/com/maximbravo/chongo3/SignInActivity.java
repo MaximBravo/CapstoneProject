@@ -185,7 +185,7 @@ public class SignInActivity extends AppCompatActivity implements
 
         if(currentUser != null) {
             Initializer initializer = new Initializer();
-            initializer.startAlarmManager(getApplicationContext());
+            //initializer.startAlarmManager(getApplicationContext());
             Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
             startActivity(intent);
         }

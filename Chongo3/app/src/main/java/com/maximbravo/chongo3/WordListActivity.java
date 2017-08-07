@@ -51,6 +51,7 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
                 if(fileString != null) {
                     args.putString("file", fileString);
                 }
+
             }
             wordListFragment.setArguments(args);
             // Add the fragment to the 'fragment_container' FrameLayout

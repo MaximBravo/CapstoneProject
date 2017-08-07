@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private final Fragment[] fragments = new Fragment[2];
+    private final Fragment[] fragments = new Fragment[1];
     private String fileString;
     private String deckName;
 
@@ -19,7 +19,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         this.deckName = deckName;
         this.fileString = fileString;
         fragments[0] = TabFragment.newInstance(0, deckName, fileString);
-        fragments[1] = TabFragment.newInstance(1, deckName, fileString);
     }
 
     @Override
@@ -31,18 +30,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 1;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "Recent";
-            case 1:
-                return "Word List";
-        }
-        return null;
+        return "Word List";
     }
 
 

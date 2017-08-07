@@ -50,7 +50,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     private RecyclerView recyclerView;
     private View rootView;
     private WordRecyclerViewAdapter recyclerViewAdapter;
-    private int mTabNumber;
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -83,11 +82,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             if (recyclerView == null) {
                 recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
                 recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                if (mTabNumber == 0) {
-                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
-                } else {
-                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
-                }
+                recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
                 recyclerView.setAdapter(recyclerViewAdapter);
             } else {
                 recyclerViewAdapter.updateData(words);
@@ -102,59 +97,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         }
     };
     private DatabaseReference userRoot;
-//    private ChildEventListener childEventListener = new ChildEventListener() {
-//
-//
-//        @Override
-//        public void onChildAdded(DataSnapshot wordSnapshot, String s) {
-//
-//            String character = (String) wordSnapshot.getKey();
-//            if (!hasWord(character)) {
-//                LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
-//                for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
-//                    allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
-//                }
-//                words.add(new Word(character, allDetails));
-//                Log.i("addWordToList", "***added " + character + " to local list");
-//            }
-//
-//            if (recyclerView == null) {
-//                recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
-//                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-//                if (mTabNumber == 0) {
-//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
-//                } else {
-//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
-//                }
-//                recyclerView.setAdapter(recyclerViewAdapter);
-//            } else {
-//                recyclerViewAdapter.updateData(words);
-//                recyclerViewAdapter.notifyDataSetChanged();
-//            }
-//        }
-//
-//        @Override
-//        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//        }
-//
-//        @Override
-//        public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//        }
-//
-//        @Override
-//        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//        }
-//
-//        @Override
-//        public void onCancelled(DatabaseError error) {
-//            // Failed to read value
-//            Log.w(TAG, "Failed to read value.", error.toException());
-//        }
-//    };
-
 
     public TabFragment() {
     }
@@ -166,7 +108,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     public static TabFragment newInstance(int sectionNumber, String deckName, String fileString) {
         TabFragment fragment = new TabFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putString("deckName", deckName);
         args.putString("file", fileString);
         fragment.setArguments(args);
@@ -184,7 +125,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_tab, container, false);
 
-        mTabNumber = getArguments().getInt(ARG_SECTION_NUMBER);
 
         mFileString = getArguments().getString("file");
 
@@ -203,39 +143,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         root = userRoot.child(currentDeck);
 
-//        root.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.i("singleValueListenerTab", "***wordCount = " + dataSnapshot.getChildrenCount());
-//                for (DataSnapshot wordSnapshot : dataSnapshot.getChildren()) {
-//                    String character = (String) wordSnapshot.getKey();
-//                    LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
-//                    for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
-//                        allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
-//                    }
-//                    words.add(new Word(character, allDetails));
-//                    Log.i("addWordToList", "***added " + character + " to local list");
-//
-//                }
-//                recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
-//                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-//                if (mTabNumber == 0) {
-//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
-//                } else {
-//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
-//                }
-//                recyclerView.setAdapter(recyclerViewAdapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-//        root.addChildEventListener(childEventListener);
-//        root.addValueEventListener(valueEventListener);
-
         root.addListenerForSingleValueEvent(valueEventListener);
 
         if (mFileString != null && mFileString.length() != 0 && !running) {
@@ -244,17 +151,12 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         }
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
-        if (mTabNumber == 1) {
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     addWord();
                 }
             });
-        } else {
-            floatingActionButton.setVisibility(View.GONE);
-        }
-
 
         return rootView;
     }

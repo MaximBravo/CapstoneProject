@@ -73,8 +73,8 @@ public class WordFragment extends Fragment {
                 pinyinTextView.setText(currentWord.getPinyin());
                 definitionTextView.setText(currentWord.getDefinition());
 
-                ListView history = (ListView) rootView.findViewById(R.id.history);
-                history.setAdapter(new HistoryAdapter(getActivity(), currentWord.getHistory()));
+//                ListView history = (ListView) rootView.findViewById(R.id.history);
+//                history.setAdapter(new HistoryAdapter(getActivity(), currentWord.getHistory()));
 
             }
 

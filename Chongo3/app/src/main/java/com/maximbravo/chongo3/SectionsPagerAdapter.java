@@ -18,13 +18,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.deckName = deckName;
         this.fileString = fileString;
-        fragments[0] = TabFragment.newInstance(0, deckName, fileString);
+        fragments[0] = WordListFragment.newInstance(0, deckName, fileString);
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a TabFragment (defined as a static inner class below).
+        // Return a WordListFragment (defined as a static inner class below).
         return fragments[position];
     }
 

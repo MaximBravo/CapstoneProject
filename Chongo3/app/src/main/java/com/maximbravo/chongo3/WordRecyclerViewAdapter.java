@@ -13,11 +13,11 @@ import java.util.ArrayList;
  */
 
 class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapter.ViewHolder> {
-    private final TabFragment.OnWordClickedListener mListener;
+    private final WordListFragment.OnWordClickedListener mListener;
     private ArrayList<Word> mWords;
     private boolean mOnlyRecent;
 
-    public WordRecyclerViewAdapter(ArrayList<Word> words, TabFragment.OnWordClickedListener listener, Boolean onlyRecent) {
+    public WordRecyclerViewAdapter(ArrayList<Word> words, WordListFragment.OnWordClickedListener listener, Boolean onlyRecent) {
         mWords = words;
         mListener = listener;
         mOnlyRecent = onlyRecent;

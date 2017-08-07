@@ -52,6 +52,7 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Initializer initializer = new Initializer();
         switch (item.getItemId()) {
             case R.id.action_sign_out:
                 FirebaseAuth.getInstance().signOut();
@@ -59,9 +60,13 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDe
                 startActivity(intent);
                 break;
             case R.id.action_stop_notifications:
-                Initializer initializer = new Initializer();
                 initializer.stopAlarmManager(this);
                 Log.i("DeckActivity", "***Stopped AlarmManager");
+                break;
+            case R.id.action_start_notifications:
+                initializer.startAlarmManager(this);
+                Log.i("DeckActivity", "***Started AlarmManager");
+                break;
         }
         return true;
     }

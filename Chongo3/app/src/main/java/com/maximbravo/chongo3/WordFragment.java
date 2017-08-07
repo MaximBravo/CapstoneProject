@@ -34,6 +34,7 @@ public class WordFragment extends Fragment {
     private DatabaseReference deckRoot;
     private DatabaseReference root;
     private Word currentWord;
+    private ValueEventListener valueEventListener;
 
 
     @Nullable
@@ -55,12 +56,12 @@ public class WordFragment extends Fragment {
         deckRoot = userRoot.child(mDeckName);
         root = deckRoot.child(mWordName);
 
-        root.addValueEventListener(new ValueEventListener() {
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
-                for(DataSnapshot detail : dataSnapshot.getChildren()) {
-                    allDetails.put(detail.getKey(), ""+detail.getValue());
+                for (DataSnapshot detail : dataSnapshot.getChildren()) {
+                    allDetails.put(detail.getKey(), "" + detail.getValue());
                 }
                 currentWord = new Word(mWordName, allDetails);
 
@@ -81,7 +82,14 @@ public class WordFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        root.addValueEventListener(valueEventListener);
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        root.removeEventListener(valueEventListener);
     }
 }

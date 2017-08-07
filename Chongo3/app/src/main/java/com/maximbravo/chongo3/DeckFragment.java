@@ -36,6 +36,7 @@ public class DeckFragment extends Fragment {
     private RecyclerView recyclerView;
     private View rootView;
     private DeckRecyclerViewAdapter recyclerViewAdapter;
+    private ValueEventListener valueEventListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,22 +60,21 @@ public class DeckFragment extends Fragment {
         });
 
         // Read from the database
-        root.addValueEventListener(new ValueEventListener() {
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //
-                for(DataSnapshot deckSnapShot: dataSnapshot.getChildren()) {
+                for (DataSnapshot deckSnapShot : dataSnapshot.getChildren()) {
                     String deckName = "" + deckSnapShot.getKey();
                     addDeckToLocalList(deckName);
                 }
-                if(recyclerView == null) {
+                if (recyclerView == null) {
                     recyclerView = (RecyclerView) rootView.findViewById(R.id.list);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                     recyclerViewAdapter = new DeckRecyclerViewAdapter(decks, mListener);
                     recyclerView.setAdapter(recyclerViewAdapter);
                 } else {
                     recyclerViewAdapter.updateData(decks);
-                    recyclerViewAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -83,9 +83,22 @@ public class DeckFragment extends Fragment {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
-        });
+        };
+
 
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        root.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        root.addValueEventListener(valueEventListener);
     }
 
     private void addDeckToLocalList(String key) {

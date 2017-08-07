@@ -1,5 +1,6 @@
 package com.maximbravo.chongo3;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,9 @@ import java.util.ArrayList;
 public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerViewAdapter.ViewHolder> {
 
     private final OnDeckClickedListener mListener;
-    private ArrayList<Deck> mDecks;
+    @NonNull private ArrayList<Deck> mDecks;
 
-    public DeckRecyclerViewAdapter(ArrayList<Deck> decks, OnDeckClickedListener listener) {
+    public DeckRecyclerViewAdapter(@NonNull ArrayList<Deck> decks, OnDeckClickedListener listener) {
         mDecks = decks;
         mListener = listener;
     }
@@ -47,6 +48,7 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
 
     public void updateData(ArrayList<Deck> newDecks) {
         mDecks = newDecks;
+        notifyDataSetChanged();
     }
     @Override
     public int getItemCount() {

@@ -13,4 +13,9 @@
         android:orderInCategory="1"
         android:title="Stop Notifications"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_start_notifications"
+        android:orderInCategory="1"
+        android:title="Start Notifications"
+        app:showAsAction="never" />
 </menu>

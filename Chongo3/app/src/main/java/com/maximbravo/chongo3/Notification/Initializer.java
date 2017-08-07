@@ -40,7 +40,7 @@ public class Initializer {
             alarmManager.setRepeating(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
-                    10 * 1000,
+                    5 * 60 * 1000,
                     pendingIntent);
         }
 

@@ -61,51 +61,23 @@ public class TabFragment extends Fragment implements View.OnClickListener {
     private String currentDeck;
     private static boolean clearFile = false;
     public static boolean running = false;
-    private ChildEventListener childEventListener = new ChildEventListener() {
-        //            @Override
-        //            public void onDataChange(DataSnapshot dataSnapshot) {
-        //                //
-        //                for(DataSnapshot wordSnapshot: dataSnapshot.getChildren()) {
-        //                    String character = (String) wordSnapshot.getKey();
-        //                    LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
-        //                    for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
-        //                        allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
-        //                    }
-        //
-        //                    if (!hasWord(character)) {
-        //
-        //                        words.add(new Word(character, allDetails));
-        //                        Log.i("addWordToList", "***added " + character + " to local list");
-        //                    }
-        //                }
-        //
-        //                if (recyclerView == null) {
-        //                    recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
-        //                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        //                    if(mTabNumber == 0) {
-        //                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
-        //                    } else {
-        //                        recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
-        //                    }
-        //                    recyclerView.setAdapter(recyclerViewAdapter);
-        //                } else {
-        //                    recyclerViewAdapter.updateData(words);
-        //                    recyclerViewAdapter.notifyDataSetChanged();
-        //                }
-        //
-        //            }
 
+    private ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
-        public void onChildAdded(DataSnapshot wordSnapshot, String s) {
-
-            String character = (String) wordSnapshot.getKey();
-            if (!hasWord(character)) {
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            //
+            for (DataSnapshot wordSnapshot : dataSnapshot.getChildren()) {
+                String character = (String) wordSnapshot.getKey();
                 LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
                 for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
                     allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
                 }
-                words.add(new Word(character, allDetails));
-                Log.i("addWordToList", "***added " + character + " to local list");
+
+                if (!hasWord(character)) {
+
+                    words.add(new Word(character, allDetails));
+                    Log.i("addWordToList", "***added " + character + " to local list");
+                }
             }
 
             if (recyclerView == null) {
@@ -121,29 +93,67 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                 recyclerViewAdapter.updateData(words);
                 recyclerViewAdapter.notifyDataSetChanged();
             }
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
         }
 
         @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
+        public void onCancelled(DatabaseError databaseError) {
 
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError error) {
-            // Failed to read value
-            Log.w(TAG, "Failed to read value.", error.toException());
         }
     };
+    private DatabaseReference userRoot;
+//    private ChildEventListener childEventListener = new ChildEventListener() {
+//
+//
+//        @Override
+//        public void onChildAdded(DataSnapshot wordSnapshot, String s) {
+//
+//            String character = (String) wordSnapshot.getKey();
+//            if (!hasWord(character)) {
+//                LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
+//                for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
+//                    allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
+//                }
+//                words.add(new Word(character, allDetails));
+//                Log.i("addWordToList", "***added " + character + " to local list");
+//            }
+//
+//            if (recyclerView == null) {
+//                recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
+//                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+//                if (mTabNumber == 0) {
+//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
+//                } else {
+//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
+//                }
+//                recyclerView.setAdapter(recyclerViewAdapter);
+//            } else {
+//                recyclerViewAdapter.updateData(words);
+//                recyclerViewAdapter.notifyDataSetChanged();
+//            }
+//        }
+//
+//        @Override
+//        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//        }
+//
+//        @Override
+//        public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//        }
+//
+//        @Override
+//        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//        }
+//
+//        @Override
+//        public void onCancelled(DatabaseError error) {
+//            // Failed to read value
+//            Log.w(TAG, "Failed to read value.", error.toException());
+//        }
+//    };
 
 
     public TabFragment() {
@@ -178,7 +188,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         mFileString = getArguments().getString("file");
 
-        if(clearFile) {
+        if (clearFile) {
             getArguments().putString("file", "");
             clearFile = false;
         }
@@ -189,19 +199,50 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         // Initialize database and root
         database = FirebaseDatabase.getInstance();
-        DatabaseReference userRoot = database.getReference(mCurrentUser.getUid());
+        userRoot = database.getReference(mCurrentUser.getUid());
 
         root = userRoot.child(currentDeck);
 
-        root.addChildEventListener(childEventListener);
+//        root.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.i("singleValueListenerTab", "***wordCount = " + dataSnapshot.getChildrenCount());
+//                for (DataSnapshot wordSnapshot : dataSnapshot.getChildren()) {
+//                    String character = (String) wordSnapshot.getKey();
+//                    LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
+//                    for (DataSnapshot detailSnapShot : wordSnapshot.getChildren()) {
+//                        allDetails.put(detailSnapShot.getKey(), "" + detailSnapShot.getValue());
+//                    }
+//                    words.add(new Word(character, allDetails));
+//                    Log.i("addWordToList", "***added " + character + " to local list");
+//
+//                }
+//                recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
+//                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+//                if (mTabNumber == 0) {
+//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, true);
+//                } else {
+//                    recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
+//                }
+//                recyclerView.setAdapter(recyclerViewAdapter);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
-        if(mFileString != null && mFileString.length() != 0 && !running) {
+//        root.addChildEventListener(childEventListener);
+//        root.addValueEventListener(valueEventListener);
+
+        if (mFileString != null && mFileString.length() != 0 && !running) {
             new LoadWordsFromFile().execute(mFileString);
             running = true;
         }
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
-        if(mTabNumber == 1) {
+        if (mTabNumber == 1) {
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -213,14 +254,19 @@ public class TabFragment extends Fragment implements View.OnClickListener {
         }
 
 
-
         return rootView;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        root.removeEventListener(childEventListener);
+        root.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        root.addValueEventListener(valueEventListener);
     }
 
     class LoadWordsFromFile extends AsyncTask<String, Void, Void> {
@@ -235,15 +281,16 @@ public class TabFragment extends Fragment implements View.OnClickListener {
             return null;
         }
     }
+
     private void addWordsFromFile(String fileString) {
         StringBuilder fileStringBuilder = new StringBuilder(fileString);
         boolean inQuotes = false;
-        for(int i = 0; i < fileString.length(); i++) {
+        for (int i = 0; i < fileString.length(); i++) {
             char current = fileString.charAt(i);
-            if(inQuotes) {
+            if (inQuotes) {
                 boolean replace = false;
                 char replacer = current;
-                switch(current) {
+                switch (current) {
                     case ',':
                         replacer = '~';
                         replace = true;
@@ -256,7 +303,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                         inQuotes = false;
                         break;
                 }
-                if(replace) {
+                if (replace) {
                     fileStringBuilder.setCharAt(i, replacer);
                 }
             } else {
@@ -273,29 +320,40 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
         String[] parsedFileParts = fileStringBuilder.toString().split(",");
 
+        HashMap<String, HashMap<String, String>> words = new HashMap<>();
         int columns = 8;
-        for(int i = columns+1; i < parsedFileParts.length; i+= columns) {
+        for (int i = columns + 1; i < parsedFileParts.length; i += columns) {
             String simplified = parsedFileParts[i];
-            String traditional = parsedFileParts[i+1];
-            String pinyin = parsedFileParts[i+2];
-            String definition = parsedFileParts[i+3];
+            String traditional = parsedFileParts[i + 1];
+            String pinyin = parsedFileParts[i + 2];
+            String definition = parsedFileParts[i + 3];
 
             definition = definition.replace('~', ',');
             char firstChar = definition.charAt(0);
-            if(firstChar == '"') {
-                definition = definition.substring(1, definition.length()-1);
+            if (firstChar == '"') {
+                definition = definition.substring(1, definition.length() - 1);
             }
-            addWordToFirebase(simplified, pinyin, definition);
+
+            HashMap<String, String> details = new HashMap<>();
+            Word newWord = new Word(simplified, pinyin, definition, currentDeck);
+            details.putAll(newWord.getAllDetails());
+            words.put(simplified, details);
+
+
         }
+        HashMap<String, Object> deckMap = new HashMap<>();
+        deckMap.put(currentDeck, words);
+        userRoot.updateChildren(deckMap);
+
         Log.i("addWordsFromFile", "***Finished method");
     }
 
 
     private boolean hasWord(String character) {
-        if(words != null) {
-            for(int i = 0 ; i < words.size(); i++) {
+        if (words != null) {
+            for (int i = 0; i < words.size(); i++) {
                 String currentCharacter = words.get(i).getCharacter();
-                if(character.equals(currentCharacter)) {
+                if (character.equals(currentCharacter)) {
                     return true;
                 }
             }
@@ -330,7 +388,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
                 String characterString = characterField.getText().toString();
                 String pinyinString = pinyinField.getText().toString();
                 String definitionString = definitionField.getText().toString();
-                if(characterString.length() == 0 ||
+                if (characterString.length() == 0 ||
                         pinyinString.length() == 0 ||
                         definitionString.length() == 0) {
                     Toast.makeText(getActivity(), "You need to fill in all fields.", Toast.LENGTH_LONG).show();

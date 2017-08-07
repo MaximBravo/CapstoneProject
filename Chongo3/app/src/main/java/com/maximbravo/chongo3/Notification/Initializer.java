@@ -19,6 +19,7 @@ import java.util.Calendar;
 public class Initializer {
 
     public static final int REQUEST_CODE = 100;
+    private boolean testing = true;//TEST***false;
 
     public void startAlarmManager(Context context) {
 
@@ -30,9 +31,15 @@ public class Initializer {
             Calendar calendar = Calendar.getInstance();
             Intent intent = new Intent(context, NotificationReciever.class);
 
+            int firstAlarm = 10;
+            int interval = 5 * 60 * 1000;
+            if(testing) {
+                firstAlarm = 5;
+                interval = 60 * 1000;
+            }
             calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
             calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE));
-            calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 10);
+            calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + firstAlarm);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -40,7 +47,7 @@ public class Initializer {
             alarmManager.setRepeating(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
-                    5 * 60 * 1000,
+                    interval,
                     pendingIntent);
         }
 

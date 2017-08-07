@@ -29,6 +29,7 @@ public class NotificationReciever extends BroadcastReceiver {
     private DatabaseReference root;
     private ArrayList<String> packToStudy;
 
+
     @Override
     public void onReceive(final Context context, Intent intent) {
 
@@ -47,6 +48,7 @@ public class NotificationReciever extends BroadcastReceiver {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Word firstWord = null;
                 for(DataSnapshot deck : dataSnapshot.getChildren()) {
+                    HashMap<String, HashMap<String, String>> words = new HashMap<>();
                     for(DataSnapshot word : deck.getChildren()) {
                         String currentCharacter = word.getKey();
                         boolean addToStudyList = false;
@@ -62,7 +64,11 @@ public class NotificationReciever extends BroadcastReceiver {
                             }
                         }
                         Word toStudy = new Word(currentCharacter, allDetails);
-                        toStudy.updateSelf(root.child(toStudy.getInDeck()));
+                        //toStudy.updateSelf(root.child(toStudy.getInDeck()));
+
+                        HashMap<String, String> details = new HashMap<>();
+                        details.putAll(allDetails);
+                        words.put(currentCharacter, details);
 
                         if (addToStudyList) {
                             if(firstWord == null) {
@@ -71,6 +77,9 @@ public class NotificationReciever extends BroadcastReceiver {
                             packToStudy.add(toStudy.toString());
                         }
                     }
+                    HashMap<String, Object> deckMap = new HashMap<>();
+                    deckMap.put(deck.getKey(), words);
+                    root.updateChildren(deckMap);
                 }
 
                 if(packToStudy.size() > 0) {

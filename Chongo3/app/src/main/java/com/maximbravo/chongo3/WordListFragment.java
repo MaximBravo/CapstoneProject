@@ -134,7 +134,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
         root = userRoot.child(currentDeck);
 
-        root.addListenerForSingleValueEvent(valueEventListener);
+        //root.addListenerForSingleValueEvent(valueEventListener);
 
         if (mFileString != null && mFileString.length() != 0 && !running) {
             new WordListFragment.LoadWordsFromFile().execute(mFileString);

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class WordListActivity extends AppCompatActivity implements TabFragment.OnWordClickedListener {
+public class WordListActivity extends AppCompatActivity implements WordListFragment.OnWordClickedListener {
 
     private String deckName;
 
@@ -45,12 +45,14 @@ public class WordListActivity extends AppCompatActivity implements TabFragment.O
 
             // Create a new Fragment to be placed in the activity layout
             WordListFragment wordListFragment = new WordListFragment();
+            Bundle args = new Bundle();
             if(deckName != null) {
-                wordListFragment.setDeckName(deckName);
+                args.putString("deckName", deckName);
                 if(fileString != null) {
-                    wordListFragment.setFileString(fileString);
+                    args.putString("file", fileString);
                 }
             }
+            wordListFragment.setArguments(args);
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.word_list_fragment_container, wordListFragment).commit();

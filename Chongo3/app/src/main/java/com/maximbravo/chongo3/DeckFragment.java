@@ -86,6 +86,8 @@ public class DeckFragment extends Fragment {
         };
 
 
+
+
         return rootView;
     }
 
@@ -98,6 +100,7 @@ public class DeckFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        root.addListenerForSingleValueEvent(valueEventListener);
         root.addValueEventListener(valueEventListener);
     }
 

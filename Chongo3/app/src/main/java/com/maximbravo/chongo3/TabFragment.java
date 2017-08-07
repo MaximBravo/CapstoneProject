@@ -236,6 +236,8 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 //        root.addChildEventListener(childEventListener);
 //        root.addValueEventListener(valueEventListener);
 
+        root.addListenerForSingleValueEvent(valueEventListener);
+
         if (mFileString != null && mFileString.length() != 0 && !running) {
             new LoadWordsFromFile().execute(mFileString);
             running = true;

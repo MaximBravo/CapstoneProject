@@ -1,11 +1,17 @@
 package com.maximbravo.chongo3;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.PersistableBundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 
 public class TabletActivity extends AppCompatActivity
         implements DeckFragment.OnDeckClickedListener,
@@ -13,6 +19,8 @@ public class TabletActivity extends AppCompatActivity
 
     private FragmentManager fragmentManager;
     private String currentDeckName;
+    private DeckFragment deckFragment;
+    private WordListFragment wordListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +28,8 @@ public class TabletActivity extends AppCompatActivity
         setContentView(R.layout.activity_tablet);
 
         fragmentManager = getSupportFragmentManager();
+        deckFragment = (DeckFragment) fragmentManager.findFragmentById(R.id.deck_fragment);
+        wordListFragment = (WordListFragment) fragmentManager.findFragmentById(R.id.word_list_fragment);
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -29,17 +39,47 @@ public class TabletActivity extends AppCompatActivity
             }
         }
         if(savedInstanceState == null) {
-            DeckFragment deckFragment = new DeckFragment();
+            deckFragment = new DeckFragment();
 
-            getSupportFragmentManager().beginTransaction()
+            fragmentManager.beginTransaction()
                     .add(R.id.deck_fragment, deckFragment).commit();
         } else {
             currentDeckName = savedInstanceState.getString("deckName");
         }
+
+        FloatingActionButton addFab = (FloatingActionButton) findViewById(R.id.add_action_button);
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(wordListFragment == null) {
+                    deckFragment.addDeck();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(TabletActivity.this);
+
+                    builder.setTitle("Choose which to add:");
+                    builder.setPositiveButton("Word", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            wordListFragment.addWord();
+                        }
+                    });
+
+                    builder.setCancelable(true);
+                    builder.setNegativeButton("Deck", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deckFragment.addDeck();
+                        }
+                    });
+                    builder.show();
+
+                }
+            }
+        });
     }
 
     private void inflateWordListFragment() {
-        WordListFragment wordListFragment = new WordListFragment();
+        wordListFragment = new WordListFragment();
 
         Bundle args = new Bundle();
         args.putString("deckName", currentDeckName);

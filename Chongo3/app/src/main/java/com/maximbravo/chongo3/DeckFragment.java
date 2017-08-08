@@ -37,11 +37,13 @@ public class DeckFragment extends Fragment {
     private View rootView;
     private DeckRecyclerViewAdapter recyclerViewAdapter;
     private ValueEventListener valueEventListener;
+    private boolean isTablet = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_deck_list, container, false);
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
         // Get current User
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -52,13 +54,16 @@ public class DeckFragment extends Fragment {
 
         // on click listener
         FloatingActionButton addDeckButton = (FloatingActionButton) rootView.findViewById(R.id.add_deck_button);
-        addDeckButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addDeck();
-            }
-        });
-
+        if(!isTablet) {
+            addDeckButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addDeck();
+                }
+            });
+        } else {
+            addDeckButton.setVisibility(View.GONE);
+        }
         // Read from the database
         valueEventListener = new ValueEventListener() {
             @Override
@@ -126,7 +131,7 @@ public class DeckFragment extends Fragment {
         return false;
     }
 
-    private void addDeck() {
+    public void addDeck() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("New Deck Name:");
 

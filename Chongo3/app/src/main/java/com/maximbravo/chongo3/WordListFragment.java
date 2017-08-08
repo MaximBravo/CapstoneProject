@@ -111,11 +111,13 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    private boolean isTablet = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_word_list, container, false);
 
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
         mFileString = getArguments().getString("file");
 
@@ -142,12 +144,16 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         }
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.add_word_button);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addWord();
-            }
-        });
+        if(!isTablet) {
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addWord();
+                }
+            });
+        } else {
+            floatingActionButton.setVisibility(View.GONE);
+        }
 
 
         return rootView;
@@ -258,7 +264,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    private void addWord() {
+    public void addWord() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Fill In details");
 

@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static com.maximbravo.chongo3.R.bool.isTablet;
+
 /**
  * Created by Maxim Bravo on 8/3/2017.
  */
@@ -28,7 +30,7 @@ public class FileExtractor extends Activity {
     private String fileString;
     public static final String TAG = "StorageClientFragment";
     private String mDeckName;
-
+    private boolean isTablet = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +38,7 @@ public class FileExtractor extends Activity {
         if(intent != null) {
             mDeckName = intent.getStringExtra("deckName");
         }
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         performFileSearch();
     }
 
@@ -83,14 +86,15 @@ public class FileExtractor extends Activity {
                 getStringFromUri(uri);
             }
 
-
-            Intent intent = new Intent(FileExtractor.this, WordListActivity.class);
+            Intent intent = new Intent();
+            if (!isTablet) {
+                intent = new Intent(FileExtractor.this, WordListActivity.class);
+            } else {
+                intent = new Intent(FileExtractor.this, TabletActivity.class);
+            }
             intent.putExtra("deckName", mDeckName);
 
-//            intent.putExtra("name", fileName);
-//            intent.putExtra("file", fileString);
             startActivity(intent);
-            // END_INCLUDE (parse_open_document_response)
         }
     }
     private String fileName;

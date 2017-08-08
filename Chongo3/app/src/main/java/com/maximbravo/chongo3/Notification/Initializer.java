@@ -19,7 +19,7 @@ import java.util.Calendar;
 public class Initializer {
 
     public static final int REQUEST_CODE = 100;
-    private boolean testing = true;//TEST***false;
+    private boolean testing = false;//TEST***false;
 
     public void startAlarmManager(Context context) {
 

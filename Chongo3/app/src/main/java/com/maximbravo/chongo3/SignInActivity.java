@@ -18,9 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResolvingResultCallbacks;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.ResultCallbacks;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,10 +40,13 @@ public class SignInActivity extends AppCompatActivity implements
     private TextView mTextView;
     private FirebaseAuth mAuth;
 
+    private boolean isTablet = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -161,8 +162,13 @@ public class SignInActivity extends AppCompatActivity implements
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
-                            startActivity(intent);
+                            if(isTablet) {
+                                Intent tabletIntent = new Intent(SignInActivity.this, TabletActivity.class);
+                                startActivity(tabletIntent);
+                            } else {
+                                Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
+                                startActivity(intent);
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -186,8 +192,13 @@ public class SignInActivity extends AppCompatActivity implements
         if(currentUser != null) {
             Initializer initializer = new Initializer();
             //initializer.startAlarmManager(getApplicationContext());
-            Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
-            startActivity(intent);
+            if(isTablet) {
+                Intent tabletIntent = new Intent(SignInActivity.this, TabletActivity.class);
+                startActivity(tabletIntent);
+            } else {
+                Intent intent = new Intent(SignInActivity.this, DeckActivity.class);
+                startActivity(intent);
+            }
         }
 
 

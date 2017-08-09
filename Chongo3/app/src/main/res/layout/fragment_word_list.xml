@@ -16,6 +16,15 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:text="There are no words in this deck. Start by pressing the Floating action button."
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_word_button"
         android:layout_width="wrap_content"

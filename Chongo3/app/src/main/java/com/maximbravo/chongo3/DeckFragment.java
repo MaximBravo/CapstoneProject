@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -76,7 +77,7 @@ public class DeckFragment extends Fragment {
                 if (recyclerView == null) {
                     recyclerView = (RecyclerView) rootView.findViewById(R.id.list);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recyclerViewAdapter = new DeckRecyclerViewAdapter(decks, mListener);
+                    recyclerViewAdapter = new DeckRecyclerViewAdapter(decks, mListener, (TextView) rootView.findViewById(R.id.empty_view));
                     recyclerView.setAdapter(recyclerViewAdapter);
                 } else {
                     recyclerViewAdapter.updateData(decks);

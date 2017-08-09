@@ -15,15 +15,19 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
     private final OnDeckClickedListener mListener;
     @NonNull private ArrayList<Deck> mDecks;
 
-    public DeckRecyclerViewAdapter(@NonNull ArrayList<Deck> decks, OnDeckClickedListener listener) {
+    public DeckRecyclerViewAdapter(@NonNull ArrayList<Deck> decks, OnDeckClickedListener listener, TextView emptyView) {
         mDecks = decks;
         mListener = listener;
+        if(decks.size() > 0) {
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.deck_list_item, parent, false);
+
         return new ViewHolder(view);
     }
 

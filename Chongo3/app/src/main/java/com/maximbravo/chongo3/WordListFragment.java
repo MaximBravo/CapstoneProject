@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,7 +79,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
             if (recyclerView == null) {
                 recyclerView = (RecyclerView) rootView.findViewById(R.id.word_list);
                 recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false);
+                recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false, (TextView) rootView.findViewById(R.id.empty_view));
                 recyclerView.setAdapter(recyclerViewAdapter);
             } else {
                 recyclerViewAdapter.updateData(words);

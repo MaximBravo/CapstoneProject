@@ -13,11 +13,19 @@
             android:id="@+id/deck_fragment"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
+        <View
+            android:layout_width="2dp"
+            android:background="@android:color/black"
+            android:layout_height="match_parent"/>
         <FrameLayout
             android:id="@+id/word_list_fragment"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"/>
         <FrameLayout
             android:id="@+id/word_fragment"
             android:layout_width="0dp"

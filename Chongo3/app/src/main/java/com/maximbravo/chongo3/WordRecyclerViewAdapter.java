@@ -17,12 +17,15 @@ class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapt
     private ArrayList<Word> mWords;
     private boolean mOnlyRecent;
 
-    public WordRecyclerViewAdapter(ArrayList<Word> words, WordListFragment.OnWordClickedListener listener, Boolean onlyRecent) {
+    public WordRecyclerViewAdapter(ArrayList<Word> words, WordListFragment.OnWordClickedListener listener, Boolean onlyRecent, TextView emptyView) {
         mWords = words;
         mListener = listener;
         mOnlyRecent = onlyRecent;
         if(onlyRecent) {
             mWords = getRecent(words);
+        }
+        if(mWords.size() > 0) {
+            emptyView.setVisibility(View.GONE);
         }
     }
 

@@ -16,6 +16,14 @@
         tools:context="com.maximbravo.chongo3.DeckFragment"
         tools:listitem="@layout/deck_list_item" />
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:text="You do not have any decks yet press the Floating action button to get started"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_deck_button"

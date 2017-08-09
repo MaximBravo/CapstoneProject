@@ -1,6 +1,7 @@
 package com.maximbravo.chongo3;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,15 +14,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.maximbravo.chongo3.Notification.Initializer;
 
 public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDeckClickedListener {
+    private boolean isTablet = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deck);
-
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
         android.support.v7.app.ActionBar toolbar = getSupportActionBar();
         if(toolbar != null) {
             toolbar.setTitle("Your Decks");
+        }
+
+        if(isTablet) {
+            if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Intent sendIntent = new Intent(this, TabletActivity.class);
+                startActivity(sendIntent);
+            }
         }
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout

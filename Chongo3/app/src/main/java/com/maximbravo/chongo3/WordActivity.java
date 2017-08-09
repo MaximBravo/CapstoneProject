@@ -2,6 +2,7 @@ package com.maximbravo.chongo3;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,24 +11,38 @@ public class WordActivity extends AppCompatActivity {
 
     private String deckName;
     private WordFragment wordFragment;
+    private boolean isTablet = false;
+    private String wordName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
 
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+
         android.support.v7.app.ActionBar toolbar = this.getSupportActionBar();
         if(toolbar != null) {
             toolbar.setTitle("");
         }
-        String wordName = null;
+
         Intent intent = getIntent();
         if(intent != null) {
             deckName = intent.getStringExtra("deckName");
             wordName = intent.getStringExtra("key");
         }
-        toolbar.setDisplayHomeAsUpEnabled(true);
+       // if(!getIntent().hasExtra("noParent")) {
+            toolbar.setDisplayHomeAsUpEnabled(true);
+        //}
 
+        if(isTablet) {
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Intent sendIntent = new Intent(this, TabletActivity.class);
+                sendIntent.putExtra("deckName", deckName);
+                sendIntent.putExtra("key", wordName);
+                startActivity(sendIntent);
+            }
+        }
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.word_fragment_container) != null) {
@@ -53,12 +68,22 @@ public class WordActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(this, WordListActivity.class);
-            intent.putExtra("deckName", deckName);
-            startActivity(intent);
+        Intent inputIntent = getIntent();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(inputIntent != null) {
+                    if(inputIntent.hasExtra("noParent")) {
+                        Intent intent = new Intent(this, WordListActivity.class);
+                        intent.putExtra("deckName", deckName);
+                        intent.putExtra("noParent", true);
+                        startActivity(intent);
+                    } else {
+                        finish();
+                    }
+                }
         }
         return true;
     }

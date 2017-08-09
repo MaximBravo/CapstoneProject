@@ -1,20 +1,32 @@
 package com.maximbravo.chongo3;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class WordListActivity extends AppCompatActivity implements WordListFragment.OnWordClickedListener {
 
     private String deckName;
+    private boolean isTablet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_list);
 
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+        if(isTablet) {
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Intent sendIntent = new Intent(this, TabletActivity.class);
+                sendIntent.putExtra("deckName", deckName);
+                startActivity(sendIntent);
+            }
+        }
 
         String fileString = null;
         Intent intent = getIntent();
@@ -29,8 +41,9 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
         if(deckName != null) {
             toolbar.setTitle(deckName);
         }
-        toolbar.setDisplayHomeAsUpEnabled(true);
-
+//        if(!getIntent().hasExtra("noParent")) {
+            toolbar.setDisplayHomeAsUpEnabled(true);
+//        }
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.word_list_fragment_container) != null) {
@@ -70,5 +83,22 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
         intent.putExtra("key", item.getCharacter());
         startActivity(intent);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent inputIntent = getIntent();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(inputIntent != null) {
+                    if(inputIntent.hasExtra("noParent")) {
+                        Intent intent = new Intent(this, DeckActivity.class);
+                        startActivity(intent);
+                    } else {
+                        finish();
+                    }
+                }
+        }
+        return true;
     }
 }

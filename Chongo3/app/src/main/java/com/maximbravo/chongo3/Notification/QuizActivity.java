@@ -47,11 +47,12 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        int width = dm.widthPixels;
+        int width = (int) (dm.widthPixels*0.8);
 
-        int height = dm.heightPixels;
+        int height = (int) (dm.heightPixels*0.8);
 
-        getWindow().setLayout((int) (width*0.8), (int) (width*0.8));
+        int smallSide = width < height ? width : height ;
+        getWindow().setLayout(smallSide, smallSide);
 
         LinearLayout mainDetails = (LinearLayout) findViewById(R.id.main_details);
 
@@ -63,6 +64,13 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         LayoutTransition transition = mainDetails.getLayoutTransition();
         transition.enableTransitionType(LayoutTransition.CHANGING);
 
+        characterTextView = (TextView) findViewById(R.id.word);
+        pinyinTextView = (TextView) findViewById(R.id.pinyin);
+        definitionTextView = (TextView) findViewById(R.id.definition);
+
+        if(savedInstanceState != null) {
+            wordInPack = savedInstanceState.getInt("wordInPack");
+        }
         startStudySession();
     }
 
@@ -72,17 +80,25 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     private void studyWord(int i) {
         Word current = packToStudy.get(i);
-        characterTextView = (TextView) findViewById(R.id.word);
-        characterTextView.setText(current.getCharacter());
-        pinyinTextView = (TextView) findViewById(R.id.pinyin);
         pinyinTextView.setVisibility(View.GONE);
-        pinyinTextView.setText(current.getPinyin());
-        definitionTextView = (TextView) findViewById(R.id.definition);
         definitionTextView.setVisibility(View.GONE);
+        characterTextView.setText(current.getCharacter());
+    }
+
+    private void showText(Word current) {
+        pinyinTextView.setText(current.getPinyin());
         definitionTextView.setText(current.getDefinition());
+        pinyinTextView.setVisibility(View.VISIBLE);
+        definitionTextView.setVisibility(View.VISIBLE);
     }
 
     private boolean done = false;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("wordInPack", wordInPack);
+    }
 
     @Override
     public void onClick(View v) {
@@ -96,8 +112,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
             switch (v.getId()) {
                 case R.id.main_details:
-                    pinyinTextView.setVisibility(View.VISIBLE);
-                    definitionTextView.setVisibility(View.VISIBLE);
+                    showText(currentWord);
                     moveToNext = false;
                     break;
                 case R.id.bad:

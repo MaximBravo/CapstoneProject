@@ -50,8 +50,11 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
         });
     }
 
-    public void updateData(ArrayList<Deck> newDecks) {
+    public void updateData(ArrayList<Deck> newDecks, TextView emptyView) {
         mDecks = newDecks;
+        if(newDecks.size() > 0) {
+            emptyView.setVisibility(View.GONE);
+        }
         notifyDataSetChanged();
     }
     @Override

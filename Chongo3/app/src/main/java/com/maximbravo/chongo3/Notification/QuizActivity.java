@@ -12,12 +12,17 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.maximbravo.chongo3.R;
 import com.maximbravo.chongo3.Word;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +35,9 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     private int wordInPack = 0;
     private ArrayList<Word> packToStudy;
+    private DatabaseReference root;
+    private FirebaseDatabase database;
+    private FirebaseUser mCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +46,46 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        if(intent != null) {
+        if(intent != null && intent.hasExtra("pack")) {
             packToStudyStrings = intent.getStringArrayListExtra("pack");
+            packToStudy = new ArrayList<Word>();
+            for(int i = 0; i < packToStudyStrings.size(); i++) {
+                packToStudy.add(Word.fromString(packToStudyStrings.get(i)));
+            }
+            startStudySession();
+        } else {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            // Initialize database and root
+            database = FirebaseDatabase.getInstance();
+            root = database.getReference(mCurrentUser.getUid());
+
+            packToStudy = new ArrayList<Word>();
+            root.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot deck : dataSnapshot.getChildren()) {
+                        for(DataSnapshot word : deck.getChildren()) {
+                            String currentCharacter = word.getKey();
+                            HashMap<String, String> allDetails = new HashMap<String, String>();
+                            for(DataSnapshot details : word.getChildren()) {
+                                allDetails.put(details.getKey(), (String) details.getValue());
+                            }
+                            Word toStudy = new Word(currentCharacter, allDetails);
+                            packToStudy.add(toStudy);
+                            startStudySession();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
-        packToStudy = new ArrayList<Word>();
-        for(int i = 0; i < packToStudyStrings.size(); i++) {
-            packToStudy.add(Word.fromString(packToStudyStrings.get(i)));
-        }
+
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -72,7 +112,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         if(savedInstanceState != null) {
             wordInPack = savedInstanceState.getInt("wordInPack");
         }
-        startStudySession();
+
     }
 
     private void startStudySession() {

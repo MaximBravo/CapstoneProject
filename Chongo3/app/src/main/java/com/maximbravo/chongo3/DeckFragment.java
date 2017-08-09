@@ -73,6 +73,7 @@ public class DeckFragment extends Fragment {
                 for (DataSnapshot deckSnapShot : dataSnapshot.getChildren()) {
                     String deckName = "" + deckSnapShot.getKey();
                     addDeckToLocalList(deckName);
+
                 }
                 if (recyclerView == null) {
                     recyclerView = (RecyclerView) rootView.findViewById(R.id.list);
@@ -80,7 +81,8 @@ public class DeckFragment extends Fragment {
                     recyclerViewAdapter = new DeckRecyclerViewAdapter(decks, mListener, (TextView) rootView.findViewById(R.id.empty_view));
                     recyclerView.setAdapter(recyclerViewAdapter);
                 } else {
-                    recyclerViewAdapter.updateData(decks);
+                    recyclerViewAdapter.updateData(decks, (TextView) rootView.findViewById(R.id.empty_view));
+
                 }
             }
 

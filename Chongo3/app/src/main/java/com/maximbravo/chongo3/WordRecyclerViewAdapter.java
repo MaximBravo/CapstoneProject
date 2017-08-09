@@ -62,11 +62,10 @@ class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapt
         });
     }
 
-    public void updateData(ArrayList<Word> newWords) {
-        if(mOnlyRecent) {
-            mWords = getRecent(newWords);
-        } else {
-            mWords = newWords;
+    public void updateData(ArrayList<Word> newWords, TextView emptyView) {
+        mWords = newWords;
+        if(mWords.size() > 0) {
+            emptyView.setVisibility(View.GONE);
         }
     }
     @Override

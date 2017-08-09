@@ -82,7 +82,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
                 recyclerViewAdapter = new WordRecyclerViewAdapter(words, mListener, false, (TextView) rootView.findViewById(R.id.empty_view));
                 recyclerView.setAdapter(recyclerViewAdapter);
             } else {
-                recyclerViewAdapter.updateData(words);
+                recyclerViewAdapter.updateData(words, (TextView) rootView.findViewById(R.id.empty_view));
                 recyclerViewAdapter.notifyDataSetChanged();
             }
 

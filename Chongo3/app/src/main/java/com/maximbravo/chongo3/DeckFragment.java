@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -151,6 +152,10 @@ public class DeckFragment extends Fragment {
     }
 
     private void addDeckToFirebase(String newDeckName) {
+        if(newDeckName.contains(".") || newDeckName.contains("#") || newDeckName.contains("/") || newDeckName.contains("$")) {
+            Toast.makeText(getContext(), "Name cannot contain: . # / $ ", Toast.LENGTH_LONG).show();
+            return;
+        }
         HashMap<String, Object> map = new HashMap<>();
         map.put(newDeckName, "");
         root.updateChildren(map);

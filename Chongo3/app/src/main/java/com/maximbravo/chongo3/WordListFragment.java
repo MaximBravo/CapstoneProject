@@ -315,6 +315,14 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addWordToFirebase(String character, String pinyin, String definition) {
+        if(character.contains(".") || character.contains("#") || character.contains("/") || character.contains("$")) {
+            Toast.makeText(getContext(), "Character cannot contain: . # / $ ", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(pinyin.contains("/") || definition.contains("/")) {
+            Toast.makeText(getContext(), "Fields cannot contain: /", Toast.LENGTH_LONG).show();
+            return;
+        }
         Word newWord = new Word(character, pinyin, definition, currentDeck);
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(character, null);

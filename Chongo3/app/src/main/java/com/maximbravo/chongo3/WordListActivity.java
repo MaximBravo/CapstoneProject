@@ -3,14 +3,18 @@ package com.maximbravo.chongo3;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class WordListActivity extends AppCompatActivity implements WordListFragment.OnWordClickedListener {
 
+    public static final String TEXT_TRANSITION_NAME = "transitionName";
     private String deckName;
     private boolean isTablet = false;
 
@@ -74,15 +78,22 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
     }
 
     @Override
-    public void onWordClicked(Word item) {
+    public void onWordClicked(Word item, TextView sharedTextView) {
 
         Toast.makeText(this, "Hello from the character: " + item.getCharacter(), Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(this, WordActivity.class);
         intent.putExtra("deckName", deckName);
         intent.putExtra("key", item.getCharacter());
-        startActivity(intent);
 
+        intent.putExtra(TEXT_TRANSITION_NAME, ViewCompat.getTransitionName(sharedTextView));
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                sharedTextView,
+                ViewCompat.getTransitionName(sharedTextView));
+
+        startActivity(intent, options.toBundle());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.maximbravo.chongo3;
 
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,13 +51,14 @@ class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerViewAdapt
         holder.mPinyinView.setText(currentWord.getPinyin());
         holder.mDefinitionView.setText(currentWord.getDefinition());
 
+        ViewCompat.setTransitionName(holder.mCharacterView, holder.mCharacterView.getText().toString());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onWordClicked(holder.wordData);
+                    mListener.onWordClicked(holder.wordData, holder.mCharacterView);
                 }
             }
         });

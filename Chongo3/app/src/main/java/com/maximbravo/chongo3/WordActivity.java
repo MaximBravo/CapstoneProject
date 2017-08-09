@@ -13,6 +13,7 @@ public class WordActivity extends AppCompatActivity {
     private WordFragment wordFragment;
     private boolean isTablet = false;
     private String wordName;
+    private String transitionName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,9 @@ public class WordActivity extends AppCompatActivity {
         if(intent != null) {
             deckName = intent.getStringExtra("deckName");
             wordName = intent.getStringExtra("key");
+            if(intent.hasExtra(WordListActivity.TEXT_TRANSITION_NAME)) {
+                transitionName = intent.getStringExtra(WordListActivity.TEXT_TRANSITION_NAME);
+            }
         }
        // if(!getIntent().hasExtra("noParent")) {
             toolbar.setDisplayHomeAsUpEnabled(true);
@@ -61,6 +65,9 @@ public class WordActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("deckName", deckName);
             bundle.putString("key", wordName);
+            if(transitionName != null) {
+                bundle.putString(WordListActivity.TEXT_TRANSITION_NAME, transitionName);
+            }
             wordFragment.setArguments(bundle);
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()

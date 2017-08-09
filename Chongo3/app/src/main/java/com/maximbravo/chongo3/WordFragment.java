@@ -1,8 +1,10 @@
 package com.maximbravo.chongo3;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -37,6 +39,7 @@ public class WordFragment extends Fragment {
     private DatabaseReference root;
     private Word currentWord;
     private ValueEventListener valueEventListener;
+    private String transitionName;
 
 
     @Nullable
@@ -48,6 +51,10 @@ public class WordFragment extends Fragment {
         if(bundle != null) {
             mDeckName = bundle.getString("deckName");
             mWordName = bundle.getString("key");
+            if(bundle.getString(WordListActivity.TEXT_TRANSITION_NAME) != null) {
+                transitionName = bundle.getString(WordListActivity.TEXT_TRANSITION_NAME);
+                getActivity().supportPostponeEnterTransition();
+            }
         }
         // Get current User
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,6 +66,7 @@ public class WordFragment extends Fragment {
         root = deckRoot.child(mWordName);
 
         valueEventListener = new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 LinkedHashMap<String, String> allDetails = new LinkedHashMap<String, String>();
@@ -68,12 +76,18 @@ public class WordFragment extends Fragment {
                 currentWord = new Word(mWordName, allDetails);
 
                 TextView wordTextView = (TextView) rootView.findViewById(R.id.word);
+
                 TextView pinyinTextView = (TextView) rootView.findViewById(R.id.pinyin);
                 TextView definitionTextView = (TextView) rootView.findViewById(R.id.definition);
-
-                wordTextView.setText(currentWord.getCharacter());
                 pinyinTextView.setText(currentWord.getPinyin());
                 definitionTextView.setText(currentWord.getDefinition());
+                if(transitionName != null) {
+                    wordTextView.setTransitionName(transitionName);
+                    wordTextView.setText(currentWord.getCharacter());
+                    getActivity().supportStartPostponedEnterTransition();
+                } else {
+                    wordTextView.setText(currentWord.getCharacter());
+                }
 
 //                ListView history = (ListView) rootView.findViewById(R.id.history);
 //                history.setAdapter(new HistoryAdapter(getActivity(), currentWord.getHistory()));

@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.maximbravo.chongo3.Notification.Initializer;
@@ -162,7 +163,7 @@ public class TabletActivity extends AppCompatActivity
     }
 
     @Override
-    public void onWordClicked(Word item) {
+    public void onWordClicked(Word item, TextView sharedTextView) {
         currentWordName = item.getCharacter();
         inflateWordFragment();
     }

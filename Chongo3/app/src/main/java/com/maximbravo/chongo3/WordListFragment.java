@@ -374,7 +374,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
      */
     public interface OnWordClickedListener {
         // TODO: Update argument type and name
-        void onWordClicked(Word item);
+        void onWordClicked(Word item, TextView sharedView);
     }
 
 }

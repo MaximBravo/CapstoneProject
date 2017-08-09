@@ -19,10 +19,13 @@ import com.maximbravo.chongo3.Word;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class QuizActivity extends Activity implements View.OnClickListener {
-    private TextView characterTextView;
-    private TextView pinyinTextView;
-    private TextView definitionTextView;
+    @BindView(R.id.word) TextView characterTextView;
+    @BindView(R.id.pinyin) TextView pinyinTextView;
+    @BindView(R.id.definition) TextView definitionTextView;
     private ArrayList<String> packToStudyStrings;
 
     private int wordInPack = 0;
@@ -32,7 +35,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -64,9 +67,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         LayoutTransition transition = mainDetails.getLayoutTransition();
         transition.enableTransitionType(LayoutTransition.CHANGING);
 
-        characterTextView = (TextView) findViewById(R.id.word);
-        pinyinTextView = (TextView) findViewById(R.id.pinyin);
-        definitionTextView = (TextView) findViewById(R.id.definition);
+
 
         if(savedInstanceState != null) {
             wordInPack = savedInstanceState.getInt("wordInPack");

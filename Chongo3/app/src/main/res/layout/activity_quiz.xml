@@ -24,7 +24,7 @@
             app:layout_constraintLeft_toLeftOf="parent">
             <TextView
                 android:id="@+id/word"
-                android:text="这是一个"
+                android:text=""
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="50sp"
@@ -36,13 +36,13 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:text="zhe shi yi ge"
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/definition"
-                android:text="This is a. This is a."
+                android:text=""
                 android:visibility="gone"
                 android:gravity="center"
                 android:textStyle="bold"

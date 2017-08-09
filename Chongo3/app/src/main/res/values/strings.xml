@@ -5,4 +5,11 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="bad">Bad</string>
+    <string name="ok">OK</string>
+    <string name="good">Good</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="sign_in_with_different_user">Sign In with different User?</string>
+    <string name="empty_list_text">You do not have any decks yet press the Floating action button to get started</string>
+    <string name="click_to_study_pack_freely">Click to study pack freely</string>
 </resources>

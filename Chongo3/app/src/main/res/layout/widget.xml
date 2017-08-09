@@ -13,8 +13,8 @@
         android:layout_centerVertical="true"
         android:layout_margin="8dp"
         android:background="#09C"
-        android:contentDescription="Click to study pack freely"
-        android:text="Click to study pack freely"
+        android:contentDescription="@string/click_to_study_pack_freely"
+        android:text="@string/click_to_study_pack_freely"
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:textStyle="bold|italic" />

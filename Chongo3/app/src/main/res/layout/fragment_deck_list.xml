@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="24sp"
-        android:text="You do not have any decks yet press the Floating action button to get started"
+        android:text="@string/empty_list_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

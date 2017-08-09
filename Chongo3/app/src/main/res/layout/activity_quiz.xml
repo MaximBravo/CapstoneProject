@@ -24,7 +24,6 @@
             app:layout_constraintLeft_toLeftOf="parent">
             <TextView
                 android:id="@+id/word"
-                android:text=""
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="50sp"
@@ -36,13 +35,11 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/definition"
-                android:text=""
                 android:visibility="gone"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -65,19 +62,19 @@
             android:id="@+id/bad"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Bad"
+            android:text="@string/bad"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/ok"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="OK"
+            android:text="@string/ok"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/good"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Good"
+            android:text="@string/good"
             android:layout_height="wrap_content" />
     </LinearLayout>
 

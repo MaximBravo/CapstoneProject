@@ -58,4 +58,6 @@
     <string name="deck_field">deck</string>
     <string name="bucket_field">bucket</string>
     <string name="add_button">Add button</string>
+    <string name="havent_signed_in">You Havent signed in</string>
+    <string name="position_key">position</string>
 </resources>

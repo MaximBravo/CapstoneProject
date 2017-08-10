@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "155942301882-j969m60spiv64gca88n9ahhgdm4lep2t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maximbravo.chongo3",
+            "certificate_hash": "ef13c736bdb125563b506318031f1061bcc0f36f"
+          }
+        },
+        {
           "client_id": "155942301882-tuipaniigg1hhlma06tdrmfuie8vqq96.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -80,13 +80,17 @@ public class WordFragment extends Fragment {
                 TextView pinyinTextView = (TextView) rootView.findViewById(R.id.pinyin);
                 TextView definitionTextView = (TextView) rootView.findViewById(R.id.definition);
                 pinyinTextView.setText(currentWord.getPinyin());
+                pinyinTextView.setContentDescription(currentWord.getPinyin());
                 definitionTextView.setText(currentWord.getDefinition());
+                definitionTextView.setContentDescription(currentWord.getDefinition());
                 if(transitionName != null) {
                     wordTextView.setTransitionName(transitionName);
                     wordTextView.setText(currentWord.getCharacter());
+                    wordTextView.setContentDescription(currentWord.getCharacter());
                     getActivity().supportStartPostponedEnterTransition();
                 } else {
                     wordTextView.setText(currentWord.getCharacter());
+                    wordTextView.setContentDescription(currentWord.getCharacter());
                 }
 
 //                ListView history = (ListView) rootView.findViewById(R.id.history);

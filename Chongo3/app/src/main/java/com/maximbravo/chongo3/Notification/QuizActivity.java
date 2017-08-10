@@ -124,11 +124,14 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         pinyinTextView.setVisibility(View.GONE);
         definitionTextView.setVisibility(View.GONE);
         characterTextView.setText(current.getCharacter());
+        characterTextView.setContentDescription(current.getCharacter());
     }
 
     private void showText(Word current) {
         pinyinTextView.setText(current.getPinyin());
+        pinyinTextView.setContentDescription(current.getPinyin());
         definitionTextView.setText(current.getDefinition());
+        definitionTextView.setContentDescription(current.getDefinition());
         pinyinTextView.setVisibility(View.VISIBLE);
         definitionTextView.setVisibility(View.VISIBLE);
     }
@@ -203,6 +206,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     private void finishTest() {
         characterTextView = (TextView) findViewById(R.id.word);
         characterTextView.setText(R.string.done_message);
+        characterTextView.setContentDescription(getApplicationContext().getString(R.string.done_message));
         pinyinTextView = (TextView) findViewById(R.id.pinyin);
         pinyinTextView.setVisibility(View.GONE);
         pinyinTextView.setText("");

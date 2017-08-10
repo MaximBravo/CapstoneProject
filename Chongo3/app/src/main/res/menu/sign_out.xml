@@ -7,15 +7,18 @@
         android:id="@+id/action_sign_out"
         android:orderInCategory="100"
         android:title="@string/sign_out"
+        android:contentDescription="@string/sign_out"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_stop_notifications"
         android:orderInCategory="1"
         android:title="@string/stop_notifications"
+        android:contentDescription="@string/stop_notifications"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_start_notifications"
         android:orderInCategory="1"
         android:title="@string/start_notifications"
+        android:contentDescription="@string/start_notifications"
         app:showAsAction="never" />
 </menu>

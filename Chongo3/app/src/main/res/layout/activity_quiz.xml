@@ -63,18 +63,21 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/bad"
+            android:contentDescription="@string/bad"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/ok"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/ok"
+            android:contentDescription="@string/ok"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/good"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/good"
+            android:contentDescription="@string/good"
             android:layout_height="wrap_content" />
     </LinearLayout>
 

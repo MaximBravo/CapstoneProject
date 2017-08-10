@@ -57,4 +57,5 @@
     <string name="definition_field">definition</string>
     <string name="deck_field">deck</string>
     <string name="bucket_field">bucket</string>
+    <string name="add_button">Add button</string>
 </resources>

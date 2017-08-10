@@ -46,6 +46,7 @@ public class SignInActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        Word.applicationContext = getApplicationContext();
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
 
@@ -53,7 +54,7 @@ public class SignInActivity extends AppCompatActivity implements
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken("155942301882-kmtsrsckc7gm36u8olic4vt3u1ev7ufn.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.request_id_token))
                 .build();
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
@@ -137,8 +138,6 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess() + " statusCode: " + result.getStatus().getStatusCode()
-        + " hasResolution: " + result.getStatus().hasResolution());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount account = result.getSignInAccount();
@@ -150,7 +149,6 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -159,7 +157,6 @@ public class SignInActivity extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             if(isTablet) {
@@ -171,8 +168,7 @@ public class SignInActivity extends AppCompatActivity implements
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                            Toast.makeText(SignInActivity.this, R.string.authentication_failed,
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -206,15 +202,13 @@ public class SignInActivity extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
         if(user == null) {
-            mTextView.setText("Signed Out!");
+            mTextView.setText(R.string.signed_out_message);
         } else {
-            mTextView.setText("Hello, " + user.getEmail());
-            //Toast.makeText(this, "Hello, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+            mTextView.setText(user.getEmail());
         }
     }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
 

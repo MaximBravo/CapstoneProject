@@ -26,7 +26,6 @@ public class Initializer {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null) {
-            Log.v("Initializer", firebaseUser.getDisplayName());
 
             Calendar calendar = Calendar.getInstance();
             Intent intent = new Intent(context, NotificationReciever.class);

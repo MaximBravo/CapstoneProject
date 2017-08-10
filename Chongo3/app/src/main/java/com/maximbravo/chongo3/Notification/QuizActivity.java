@@ -46,11 +46,11 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        if(intent != null && intent.hasExtra("pack")) {
-            packToStudyStrings = intent.getStringArrayListExtra("pack");
+        if(intent != null && intent.hasExtra(getString(R.string.pack_key))) {
+            packToStudyStrings = intent.getStringArrayListExtra(getString(R.string.pack_key));
             packToStudy = new ArrayList<Word>();
             for(int i = 0; i < packToStudyStrings.size(); i++) {
-                packToStudy.add(Word.fromString(packToStudyStrings.get(i)));
+                packToStudy.add(Word.fromString(getApplicationContext(), packToStudyStrings.get(i)));
             }
             startStudySession();
         } else {
@@ -71,7 +71,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                             for(DataSnapshot details : word.getChildren()) {
                                 allDetails.put(details.getKey(), (String) details.getValue());
                             }
-                            Word toStudy = new Word(currentCharacter, allDetails);
+                            Word toStudy = new Word(getApplicationContext(), currentCharacter, allDetails);
                             packToStudy.add(toStudy);
                             startStudySession();
                         }
@@ -110,7 +110,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
 
         if(savedInstanceState != null) {
-            wordInPack = savedInstanceState.getInt("wordInPack");
+            wordInPack = savedInstanceState.getInt(getString(R.string.word_in_pack_key));
         }
 
     }
@@ -138,7 +138,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("wordInPack", wordInPack);
+        outState.putInt(getString(R.string.word_in_pack_key), wordInPack);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     private void finishTest() {
         characterTextView = (TextView) findViewById(R.id.word);
-        characterTextView.setText("Your Done!");
+        characterTextView.setText(R.string.done_message);
         pinyinTextView = (TextView) findViewById(R.id.pinyin);
         pinyinTextView.setVisibility(View.GONE);
         pinyinTextView.setText("");

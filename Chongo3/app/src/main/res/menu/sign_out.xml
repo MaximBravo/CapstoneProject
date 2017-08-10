@@ -6,16 +6,16 @@
     <item
         android:id="@+id/action_sign_out"
         android:orderInCategory="100"
-        android:title="Sign Out"
+        android:title="@string/sign_out"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_stop_notifications"
         android:orderInCategory="1"
-        android:title="Stop Notifications"
+        android:title="@string/stop_notifications"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_start_notifications"
         android:orderInCategory="1"
-        android:title="Start Notifications"
+        android:title="@string/start_notifications"
         app:showAsAction="never" />
 </menu>

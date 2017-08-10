@@ -90,7 +90,6 @@ public class DeckFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
             }
         };
 
@@ -137,11 +136,11 @@ public class DeckFragment extends Fragment {
 
     public void addDeck() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("New Deck Name:");
+        builder.setTitle(R.string.add_deck_promt);
 
         final EditText nameField = new EditText(getActivity());
         builder.setView(nameField);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.ok_option), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 addDeckToFirebase(nameField.getText().toString());
@@ -153,7 +152,7 @@ public class DeckFragment extends Fragment {
 
     private void addDeckToFirebase(String newDeckName) {
         if(newDeckName.contains(".") || newDeckName.contains("#") || newDeckName.contains("/") || newDeckName.contains("$")) {
-            Toast.makeText(getContext(), "Name cannot contain: . # / $ ", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.name_cannot_contain_message, Toast.LENGTH_LONG).show();
             return;
         }
         HashMap<String, Object> map = new HashMap<>();
@@ -168,7 +167,7 @@ public class DeckFragment extends Fragment {
             mListener = (OnDeckClickedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnDeckClickedListener");
+                    + getString(R.string.deck_click_exception));
         }
     }
 

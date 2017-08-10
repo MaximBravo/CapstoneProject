@@ -28,7 +28,7 @@ public class FileExtractor extends Activity {
     private static final int READ_REQUEST_CODE = 1337;
 
     private String fileString;
-    public static final String TAG = "StorageClientFragment";
+    public static final String TAG = "FileExtractor";
     private String mDeckName;
     private boolean isTablet = false;
     @Override
@@ -36,7 +36,7 @@ public class FileExtractor extends Activity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         if(intent != null) {
-            mDeckName = intent.getStringExtra("deckName");
+            mDeckName = intent.getStringExtra(getString(R.string.deck_name_key));
         }
         isTablet = getResources().getBoolean(R.bool.isTablet);
         performFileSearch();
@@ -61,7 +61,7 @@ public class FileExtractor extends Activity {
         // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
         // To search for all documents available via installed storage providers, it would be
         // "*/*".
-        intent.setType("text/*");
+        intent.setType(getString(R.string.mime_type_text));
 
         startActivityForResult(intent, READ_REQUEST_CODE);
         // END_INCLUDE (use_open_document_intent)
@@ -69,7 +69,7 @@ public class FileExtractor extends Activity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        Log.i(TAG, "Received an \"Activity Result\"");
+        Log.i(TAG, getString(R.string.recieve_activity_result));
         // BEGIN_INCLUDE (parse_open_document_response)
         // The ACTION_OPEN_DOCUMENT intent was sent with the request code READ_REQUEST_CODE.
         // If the request code seen here doesn't match, it's the response to some other intent,
@@ -82,7 +82,7 @@ public class FileExtractor extends Activity {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-                Log.i(TAG, "Uri: " + uri.toString());
+                Log.i(TAG, uri.toString());
                 getStringFromUri(uri);
             }
 
@@ -92,7 +92,7 @@ public class FileExtractor extends Activity {
             } else {
                 intent = new Intent(FileExtractor.this, TabletActivity.class);
             }
-            intent.putExtra("deckName", mDeckName);
+            intent.putExtra(getString(R.string.deck_name_key), mDeckName);
 
             startActivity(intent);
         }
@@ -138,7 +138,7 @@ public class FileExtractor extends Activity {
 
             FileInputStream inputStream = new FileInputStream(fileDescriptor);
             BufferedReader bufferReader  = new BufferedReader(
-                    new InputStreamReader(inputStream,"UTF-8"));
+                    new InputStreamReader(inputStream,getString(R.string.utf_8)));
 
             String result = "";
             int i = 0;
@@ -147,7 +147,7 @@ public class FileExtractor extends Activity {
             }
             return result;
         } catch (Exception e) {
-            Log.e(TAG, "Failed to File", e);
+            Log.e(TAG, getString(R.string.failed_load_file), e);
             return null;
         } finally {
             try {
@@ -156,7 +156,7 @@ public class FileExtractor extends Activity {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e(TAG, "Error closing ParcelFile Descriptor");
+                Log.e(TAG, getString(R.string.error_closing_parcelable));
             }
         }
     }
@@ -180,7 +180,7 @@ public class FileExtractor extends Activity {
                 String displayName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 fileName = displayName;
-                Log.i(TAG, "Display Name: " + displayName);
+                Log.i(TAG, getString(R.string.display_name) + displayName);
 
                 int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
 
@@ -188,9 +188,9 @@ public class FileExtractor extends Activity {
                 if (!cursor.isNull(sizeIndex)) {
                     size = cursor.getString(sizeIndex);
                 } else {
-                    size = "Unknown";
+                    size = getString(R.string.unknown_string);
                 }
-                Log.i(TAG, "Size: " + size);
+                Log.i(TAG, getString(R.string.size_string) + size);
             }
         } finally {
             if (cursor != null) {

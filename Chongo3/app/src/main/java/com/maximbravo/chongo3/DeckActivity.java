@@ -15,6 +15,7 @@ import com.maximbravo.chongo3.Notification.Initializer;
 
 public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDeckClickedListener {
     private boolean isTablet = false;
+    private static final String TAG = "DeckActivity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +24,7 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDe
 
         android.support.v7.app.ActionBar toolbar = getSupportActionBar();
         if(toolbar != null) {
-            toolbar.setTitle("Your Decks");
+            toolbar.setTitle(R.string.deck_activity_title);
         }
 
         if(isTablet) {
@@ -70,11 +71,11 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDe
                 break;
             case R.id.action_stop_notifications:
                 initializer.stopAlarmManager(this);
-                Log.i("DeckActivity", "***Stopped AlarmManager");
+                Log.i(TAG, getString(R.string.stop_alarmmanager));
                 break;
             case R.id.action_start_notifications:
                 initializer.startAlarmManager(this);
-                Log.i("DeckActivity", "***Started AlarmManager");
+                Log.i(TAG, getString(R.string.start_alarmmanager));
                 break;
         }
         return true;
@@ -84,7 +85,7 @@ public class DeckActivity extends AppCompatActivity implements DeckFragment.OnDe
     @Override
     public void onDeckClicked(Deck item) {
         Intent intent = new Intent(this, WordListActivity.class);
-        intent.putExtra("deckName", item.getName());
+        intent.putExtra(getString(R.string.deck_name_key), item.getName());
         startActivity(intent);
     }
 }

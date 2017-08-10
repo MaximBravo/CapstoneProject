@@ -18,6 +18,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.maximbravo.chongo3.R;
 import com.maximbravo.chongo3.Word;
 /**
  * Created by Maxim Bravo on 8/4/2017.
@@ -55,15 +57,15 @@ public class NotificationReciever extends BroadcastReceiver {
                         HashMap<String, String> allDetails = new HashMap<String, String>();
                         for(DataSnapshot details : word.getChildren()) {
                             allDetails.put(details.getKey(), (String) details.getValue());
-                            if(details.getKey().equals("rounds")) {
-                                if(Integer.parseInt(""+details.getValue()) <= 0) {
+                            if(details.getKey().equals(context.getString(R.string.rounds_field))) {
+                                if(Integer.parseInt(String.format("%s", details.getValue())) <= 0) {
                                     addToStudyList = true;
                                 }
                                 allDetails.put(details.getKey(), "" + (Integer.parseInt(""+details.getValue())-1));
 
                             }
                         }
-                        Word toStudy = new Word(currentCharacter, allDetails);
+                        Word toStudy = new Word(context, currentCharacter, allDetails);
                         //toStudy.updateSelf(root.child(toStudy.getInDeck()));
 
                         HashMap<String, String> details = new HashMap<>();
@@ -88,7 +90,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
                     Intent repeatingIntent = new Intent(context, QuizActivity.class);
                     repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    repeatingIntent.putExtra("pack", packToStudy);
+                    repeatingIntent.putExtra(context.getString(R.string.pack_key), packToStudy);
 
                     PendingIntent pendingIntent = PendingIntent.getActivity(context, 100,
                             repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -97,7 +99,7 @@ public class NotificationReciever extends BroadcastReceiver {
                             .setContentIntent(pendingIntent)
                             .setSmallIcon(android.R.drawable.btn_star)
                             .setContentTitle(firstWord.getCharacter())
-                            .setContentText("click to study")
+                            .setContentText(context.getString(R.string.notification_content_text))
                             .setAutoCancel(true);
 
                     notificationManager.notify(100, builder.build());
@@ -110,7 +112,6 @@ public class NotificationReciever extends BroadcastReceiver {
             }
         });
 
-        Log.v("NotificationReciever**", firebaseUser.getDisplayName());
 
 
     }

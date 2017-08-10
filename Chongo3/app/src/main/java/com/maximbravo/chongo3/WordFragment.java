@@ -49,8 +49,8 @@ public class WordFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if(bundle != null) {
-            mDeckName = bundle.getString("deckName");
-            mWordName = bundle.getString("key");
+            mDeckName = bundle.getString(getString(R.string.deck_name_key));
+            mWordName = bundle.getString(getString(R.string.word_name_key));
             if(bundle.getString(WordListActivity.TEXT_TRANSITION_NAME) != null) {
                 transitionName = bundle.getString(WordListActivity.TEXT_TRANSITION_NAME);
                 getActivity().supportPostponeEnterTransition();
@@ -73,7 +73,7 @@ public class WordFragment extends Fragment {
                 for (DataSnapshot detail : dataSnapshot.getChildren()) {
                     allDetails.put(detail.getKey(), "" + detail.getValue());
                 }
-                currentWord = new Word(mWordName, allDetails);
+                currentWord = new Word(getContext(), mWordName, allDetails);
 
                 TextView wordTextView = (TextView) rootView.findViewById(R.id.word);
 

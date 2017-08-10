@@ -3,8 +3,6 @@ package com.maximbravo.chongo3;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
-import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +23,7 @@ public class TabletActivity extends AppCompatActivity
         implements DeckFragment.OnDeckClickedListener,
         WordListFragment.OnWordClickedListener {
 
+    private static final String TAG = "TabletActivity";
     private FragmentManager fragmentManager;
     private String currentDeckName;
     private String currentWordName;
@@ -48,11 +46,11 @@ public class TabletActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         if(intent != null) {
-            if(intent.getStringExtra("deckName") != null) {
-                currentDeckName = intent.getStringExtra("deckName");
+            if(intent.getStringExtra(getString(R.string.deck_name_key)) != null) {
+                currentDeckName = intent.getStringExtra(getString(R.string.deck_name_key));
                 inflateWordListFragment();
-                if(intent.getStringExtra("key") != null) {
-                    currentWordName = intent.getStringExtra("key");
+                if(intent.getStringExtra(getString(R.string.word_name_key)) != null) {
+                    currentWordName = intent.getStringExtra(getString(R.string.word_name_key));
                     inflateWordFragment();
                 }
             }
@@ -63,22 +61,22 @@ public class TabletActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .add(R.id.deck_fragment, deckFragment).commit();
         } else {
-            currentDeckName = savedInstanceState.getString("deckName");
-            currentWordName = savedInstanceState.getString("wordName");
+            currentDeckName = savedInstanceState.getString(getString(R.string.deck_name_key));
+            currentWordName = savedInstanceState.getString(getString(R.string.word_name_key));
         }
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             Intent sendIntent;
             if(wordFragment != null) {
                 sendIntent = new Intent(this, WordActivity.class);
-                sendIntent.putExtra("key", currentWordName);
+                sendIntent.putExtra(getString(R.string.word_name_key), currentWordName);
             } else if (wordListFragment != null) {
                 sendIntent = new Intent(this, WordListActivity.class);
             } else {
                 sendIntent = new Intent(this, DeckActivity.class);
             }
-            sendIntent.putExtra("deckName", currentDeckName);
-            sendIntent.putExtra("noParent", true);
+            sendIntent.putExtra(getString(R.string.deck_name_key), currentDeckName);
+            sendIntent.putExtra(getString(R.string.no_parent_key), true);
             startActivity(sendIntent);
         }
 
@@ -91,8 +89,8 @@ public class TabletActivity extends AppCompatActivity
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(TabletActivity.this);
 
-                    builder.setTitle("Choose which to add:");
-                    builder.setPositiveButton("Word", new DialogInterface.OnClickListener() {
+                    builder.setTitle(R.string.choose_deck_or_word_add_prompt);
+                    builder.setPositiveButton(R.string.word_choice, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             wordListFragment.addWord();
@@ -100,7 +98,7 @@ public class TabletActivity extends AppCompatActivity
                     });
 
                     builder.setCancelable(true);
-                    builder.setNegativeButton("Deck", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(R.string.deck_choice, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             deckFragment.addDeck();
@@ -117,7 +115,7 @@ public class TabletActivity extends AppCompatActivity
         wordListFragment = new WordListFragment();
 
         Bundle args = new Bundle();
-        args.putString("deckName", currentDeckName);
+        args.putString(getString(R.string.deck_name_key), currentDeckName);
         wordListFragment.setArguments(args);
 
         if(fragmentManager.findFragmentById(R.id.word_list_fragment) == null) {
@@ -133,8 +131,8 @@ public class TabletActivity extends AppCompatActivity
         wordFragment = new WordFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString("deckName", currentDeckName);
-        bundle.putString("key", currentWordName);
+        bundle.putString(getString(R.string.deck_name_key), currentDeckName);
+        bundle.putString(getString(R.string.word_name_key), currentWordName);
         wordFragment.setArguments(bundle);
 
         if(fragmentManager.findFragmentById(R.id.word_fragment) == null) {
@@ -158,8 +156,8 @@ public class TabletActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("deckName", currentDeckName);
-        outState.putString("wordName", currentWordName);
+        outState.putString(getString(R.string.deck_name_key), currentDeckName);
+        outState.putString(getString(R.string.word_name_key), currentWordName);
     }
 
     @Override
@@ -186,11 +184,11 @@ public class TabletActivity extends AppCompatActivity
                 break;
             case R.id.action_stop_notifications:
                 initializer.stopAlarmManager(this);
-                Log.i("DeckActivity", "***Stopped AlarmManager");
+                Log.i(TAG, getString(R.string.stop_alarmmanager));
                 break;
             case R.id.action_start_notifications:
                 initializer.startAlarmManager(this);
-                Log.i("DeckActivity", "***Started AlarmManager");
+                Log.i(TAG, getString(R.string.start_alarmmanager));
                 break;
         }
         return true;

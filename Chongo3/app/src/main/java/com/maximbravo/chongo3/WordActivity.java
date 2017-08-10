@@ -29,8 +29,8 @@ public class WordActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent != null) {
-            deckName = intent.getStringExtra("deckName");
-            wordName = intent.getStringExtra("key");
+            deckName = intent.getStringExtra(getString(R.string.deck_name_key));
+            wordName = intent.getStringExtra(getString(R.string.word_name_key));
             if(intent.hasExtra(WordListActivity.TEXT_TRANSITION_NAME)) {
                 transitionName = intent.getStringExtra(WordListActivity.TEXT_TRANSITION_NAME);
             }
@@ -42,8 +42,8 @@ public class WordActivity extends AppCompatActivity {
         if(isTablet) {
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Intent sendIntent = new Intent(this, TabletActivity.class);
-                sendIntent.putExtra("deckName", deckName);
-                sendIntent.putExtra("key", wordName);
+                sendIntent.putExtra(getString(R.string.deck_name_key), deckName);
+                sendIntent.putExtra(getString(R.string.word_name_key), wordName);
                 startActivity(sendIntent);
             }
         }
@@ -63,8 +63,8 @@ public class WordActivity extends AppCompatActivity {
             wordFragment = new WordFragment();
 
             Bundle bundle = new Bundle();
-            bundle.putString("deckName", deckName);
-            bundle.putString("key", wordName);
+            bundle.putString(getString(R.string.deck_name_key), deckName);
+            bundle.putString(getString(R.string.word_name_key), wordName);
             if(transitionName != null) {
                 bundle.putString(WordListActivity.TEXT_TRANSITION_NAME, transitionName);
             }
@@ -82,10 +82,10 @@ public class WordActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if(inputIntent != null) {
-                    if(inputIntent.hasExtra("noParent")) {
+                    if(inputIntent.hasExtra(getString(R.string.no_parent_key))) {
                         Intent intent = new Intent(this, WordListActivity.class);
-                        intent.putExtra("deckName", deckName);
-                        intent.putExtra("noParent", true);
+                        intent.putExtra(getString(R.string.deck_name_key), deckName);
+                        intent.putExtra(getString(R.string.no_parent_key), true);
                         startActivity(intent);
                     } else {
                         finish();

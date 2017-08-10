@@ -27,7 +27,7 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
         if(isTablet) {
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Intent sendIntent = new Intent(this, TabletActivity.class);
-                sendIntent.putExtra("deckName", deckName);
+                sendIntent.putExtra(getString(R.string.deck_name_key), deckName);
                 startActivity(sendIntent);
             }
         }
@@ -35,9 +35,9 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
         String fileString = null;
         Intent intent = getIntent();
         if(intent != null) {
-            deckName = intent.getStringExtra("deckName");
-            if(intent.hasExtra("file")) {
-                fileString = intent.getStringExtra("file");
+            deckName = intent.getStringExtra(getString(R.string.deck_name_key));
+            if(intent.hasExtra(getString(R.string.file_key))) {
+                fileString = intent.getStringExtra(getString(R.string.file_key));
             }
         }
 
@@ -64,9 +64,9 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
             WordListFragment wordListFragment = new WordListFragment();
             Bundle args = new Bundle();
             if(deckName != null) {
-                args.putString("deckName", deckName);
+                args.putString(getString(R.string.deck_name_key), deckName);
                 if(fileString != null) {
-                    args.putString("file", fileString);
+                    args.putString(getString(R.string.file_key), fileString);
                 }
 
             }
@@ -80,11 +80,10 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
     @Override
     public void onWordClicked(Word item, TextView sharedTextView) {
 
-        Toast.makeText(this, "Hello from the character: " + item.getCharacter(), Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(this, WordActivity.class);
-        intent.putExtra("deckName", deckName);
-        intent.putExtra("key", item.getCharacter());
+        intent.putExtra(getString(R.string.deck_name_key), deckName);
+        intent.putExtra(getString(R.string.word_name_key), item.getCharacter());
 
         intent.putExtra(TEXT_TRANSITION_NAME, ViewCompat.getTransitionName(sharedTextView));
 
@@ -102,7 +101,7 @@ public class WordListActivity extends AppCompatActivity implements WordListFragm
         switch (item.getItemId()) {
             case android.R.id.home:
                 if(inputIntent != null) {
-                    if(inputIntent.hasExtra("noParent")) {
+                    if(inputIntent.hasExtra(getString(R.string.no_parent_key))) {
                         Intent intent = new Intent(this, DeckActivity.class);
                         startActivity(intent);
                     } else {

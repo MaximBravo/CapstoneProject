@@ -1,5 +1,7 @@
 package com.maximbravo.chongo3;
 
+import android.content.Context;
+
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
@@ -7,12 +9,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  * Created by Maxim Bravo on 8/2/2017.
  */
 
 public class Word {
+    public static Context applicationContext;
+    private Context context;
     private String bucket;
     private String character;
     private String pinyin;
@@ -22,29 +27,31 @@ public class Word {
     private HashMap<String, String> allDetails;
 
 
-    public Word(String character, HashMap<String, String> allDetails) {
+    public Word(Context context, String character, HashMap<String, String> allDetails) {
+        this.context = context;
         this.character = character;
-        this.pinyin = allDetails.get("pinyin");
-        this.definition = allDetails.get("definition");
-        this.inDeck = allDetails.get("deck");
-        this.rounds = allDetails.get("rounds");
-        this.bucket = allDetails.get("bucket");
+        this.pinyin = allDetails.get(context.getString(R.string.pinyin_field));
+        this.definition = allDetails.get(context.getString(R.string.definition_field));
+        this.inDeck = allDetails.get(context.getString(R.string.deck_field));
+        this.rounds = allDetails.get(context.getString(R.string.rounds_field));
+        this.bucket = allDetails.get(context.getString(R.string.bucket_field));
         this.allDetails = allDetails;
     }
 
-    public Word(String character, String pinyin, String definition, String deck) {
+    public Word(Context context, String character, String pinyin, String definition, String deck) {
+        this.context = context;
         this.character = character;
         this.pinyin = pinyin;
         this.definition = definition;
         this.allDetails = new LinkedHashMap<>();
-        allDetails.put("pinyin", pinyin);
-        allDetails.put("definition", definition);
-        allDetails.put("deck", deck);
+        allDetails.put(context.getString(R.string.pinyin_field), pinyin);
+        allDetails.put(context.getString(R.string.definition_field), definition);
+        allDetails.put(context.getString(R.string.deck_field), deck);
 
         Random rand = new Random();
         int randomNumber = rand.nextInt(5) + 1;
-        allDetails.put("rounds", "" + randomNumber);
-        allDetails.put("bucket", "1");
+        allDetails.put(context.getString(R.string.rounds_field), "" + randomNumber);
+        allDetails.put(context.getString(R.string.bucket_field), "1");
     }
 
     public String getInDeck() {
@@ -65,11 +72,11 @@ public class Word {
         }
         Map<String, String> history = new HashMap<>();
         for(String key : allDetails.keySet()) {
-            if(key.equals("pinyin") ||
-                    key.equals("definition") ||
-                    key.equals("bucket") ||
-                    key.equals("deck") ||
-                    key.equals("rounds")) {
+            if(key.equals(context.getString(R.string.pinyin_field)) ||
+                    key.equals(context.getString(R.string.definition_field)) ||
+                    key.equals(context.getString(R.string.bucket_field)) ||
+                    key.equals(context.getString(R.string.deck_field)) ||
+                    key.equals(context.getString(R.string.rounds_field))) {
                 continue;
             }
             history.put(key, allDetails.get(key));
@@ -150,7 +157,7 @@ public class Word {
         return toReturn;
     }
 
-    public static Word fromString(String wordString) {
+    public static Word fromString(Context contextA, String wordString) {
         String[] parts = wordString.split(divider);
         String character = parts[0];
         String pinyin = parts[1];
@@ -166,11 +173,12 @@ public class Word {
             history.put(key, value);
         }
 
-        Word newWord = new Word(character, pinyin, definition, inDeck, rounds, bucket, history);
+        Word newWord = new Word(contextA, character, pinyin, definition, inDeck, rounds, bucket, history);
         return newWord;
     }
 
-    public Word(String character, String pinyin, String definition, String inDeck, String rounds, String bucket, HashMap<String, String> history) {
+    public Word(Context context, String character, String pinyin, String definition, String inDeck, String rounds, String bucket, HashMap<String, String> history) {
+        this.context = context;
         this.character = character;
         this.pinyin = pinyin;
         this.definition = definition;
@@ -178,11 +186,11 @@ public class Word {
         this.rounds = rounds;
         this.bucket = bucket;
         HashMap<String, String> allDetails = new HashMap<>();
-        allDetails.put("pinyin", pinyin);
-        allDetails.put("definition", definition);
-        allDetails.put("deck", inDeck);
-        allDetails.put("bucket", bucket);
-        allDetails.put("rounds", rounds);
+        allDetails.put(context.getString(R.string.pinyin_field), pinyin);
+        allDetails.put(context.getString(R.string.definition_field), definition);
+        allDetails.put(context.getString(R.string.deck_field), inDeck);
+        allDetails.put(context.getString(R.string.bucket_field), bucket);
+        allDetails.put(context.getString(R.string.rounds_field), rounds);
         allDetails.putAll(history);
         this.allDetails = allDetails;
     }
@@ -211,10 +219,10 @@ public class Word {
     }
 
     private void updateDetailsMap() {
-        allDetails.put("pinyin", pinyin);
-        allDetails.put("definition", definition);
-        allDetails.put("deck", inDeck);
-        allDetails.put("bucket", bucket);
-        allDetails.put("rounds", rounds);
+        allDetails.put(context.getString(R.string.pinyin_field), pinyin);
+        allDetails.put(context.getString(R.string.definition_field), definition);
+        allDetails.put(context.getString(R.string.deck_field), inDeck);
+        allDetails.put(context.getString(R.string.bucket_field), bucket);
+        allDetails.put(context.getString(R.string.rounds_field), rounds);
     }
 }

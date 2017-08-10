@@ -51,7 +51,6 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NUMBER = "section_number";
     private WordListFragment.OnWordClickedListener mListener;
     private String mFileString;
     private static String currentDeck;
@@ -71,8 +70,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
                 if (!hasWord(character)) {
 
-                    words.add(new Word(character, allDetails));
-                    Log.i("addWordToList", "***added " + character + " to local list");
+                    words.add(new Word(getContext(), character, allDetails));
                 }
             }
 
@@ -121,14 +119,14 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
-        mFileString = getArguments().getString("file");
+        mFileString = getArguments().getString(getString(R.string.file_key));
 
         if (clearFile) {
-            getArguments().putString("file", "");
+            getArguments().putString(getString(R.string.file_key), "");
             clearFile = false;
         }
 
-        currentDeck = getArguments().getString("deckName");
+        currentDeck = getArguments().getString(getString(R.string.deck_name_key));
         // Get current User
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -178,7 +176,6 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Void doInBackground(String... params) {
-            Log.i("LoadWordsFromFile", "***doInBackground");
             String fileString = params[0];
             addWordsFromFile(fileString);
             running = false;
@@ -186,6 +183,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
             return null;
         }
     }
+
 
     private static void addWordsFromFile(String fileString) {
         StringBuilder fileStringBuilder = new StringBuilder(fileString);
@@ -240,7 +238,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
             }
 
             HashMap<String, String> details = new HashMap<>();
-            Word newWord = new Word(simplified, pinyin, definition, currentDeck);
+            Word newWord = new Word(Word.applicationContext, simplified, pinyin, definition, currentDeck);
             details.putAll(newWord.getAllDetails());
             words.put(simplified, details);
 
@@ -250,7 +248,6 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         deckMap.put(currentDeck, words);
         userRoot.updateChildren(deckMap);
 
-        Log.i("addWordsFromFile", "***Finished method");
     }
 
 
@@ -268,26 +265,26 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
     public void addWord() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Fill In details");
+        builder.setTitle(R.string.fill_in_detials_hint);
 
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         final EditText characterField = new EditText(getActivity());
-        characterField.setHint("子");
+        characterField.setHint(R.string.character_hint);
         linearLayout.addView(characterField);
 
         final EditText pinyinField = new EditText(getActivity());
-        pinyinField.setHint("zǐ");
+        pinyinField.setHint(R.string.pinyin_hint);
         linearLayout.addView(pinyinField);
 
         final EditText definitionField = new EditText(getActivity());
-        definitionField.setHint("son; child; person");
+        definitionField.setHint(R.string.definition_hint);
         linearLayout.addView(definitionField);
 
         builder.setView(linearLayout);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok_option, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String characterString = characterField.getText().toString();
@@ -296,17 +293,17 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
                 if (characterString.length() == 0 ||
                         pinyinString.length() == 0 ||
                         definitionString.length() == 0) {
-                    Toast.makeText(getActivity(), "You need to fill in all fields.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.fill_in_all_fields_message, Toast.LENGTH_LONG).show();
                 } else {
                     addWordToFirebase(characterString, pinyinString, definitionString);
                 }
             }
         });
-        builder.setNegativeButton("Import From .csv", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.import_option, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(getActivity(), FileExtractor.class);
-                intent.putExtra("deckName", currentDeck);
+                intent.putExtra(getString(R.string.deck_name_key), currentDeck);
                 startActivity(intent);
             }
         });
@@ -316,14 +313,14 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
 
     public void addWordToFirebase(String character, String pinyin, String definition) {
         if(character.contains(".") || character.contains("#") || character.contains("/") || character.contains("$")) {
-            Toast.makeText(getContext(), "Character cannot contain: . # / $ ", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.character_cannot_contain_message, Toast.LENGTH_LONG).show();
             return;
         }
         if(pinyin.contains("/") || definition.contains("/")) {
-            Toast.makeText(getContext(), "Fields cannot contain: /", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.field_cannot_contain_message, Toast.LENGTH_LONG).show();
             return;
         }
-        Word newWord = new Word(character, pinyin, definition, currentDeck);
+        Word newWord = new Word(getContext(), character, pinyin, definition, currentDeck);
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(character, null);
         root.updateChildren(map);
@@ -331,7 +328,6 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
         HashMap<String, Object> detailsMap = new HashMap<String, Object>();
         detailsMap.putAll(newWord.getAllDetails());
         characterRoot.updateChildren(detailsMap);
-        Log.i("addWordToFirebase", "***Added: " + character);
     }
 
     @Override
@@ -341,7 +337,7 @@ public class WordListFragment extends Fragment implements View.OnClickListener {
             mListener = (WordListFragment.OnWordClickedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnGridFragmentInteractionListener");
+                    + getString(R.string.grid_item_click_exception));
         }
     }
 

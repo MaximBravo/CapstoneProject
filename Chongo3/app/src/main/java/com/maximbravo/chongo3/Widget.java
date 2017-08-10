@@ -32,7 +32,7 @@ public class Widget extends AppWidgetProvider {
     void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
                          int appWidgetId) {
 
-        CharSequence widgetText = "Click to study pack freely";
+        CharSequence widgetText = context.getString(R.string.click_to_study_pack_freely);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
